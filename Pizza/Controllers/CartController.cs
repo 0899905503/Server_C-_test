@@ -87,6 +87,57 @@ public class CartController : ControllerBase
 
         return Ok(carts);
     }
+    [HttpDelete("clear")]
+    public async Task<IActionResult> ClearCartAsync()
+    {
+        try
+        {
+            if (_conn.State != System.Data.ConnectionState.Open)
+                await _conn.OpenAsync();
+
+
+            string query = "delete from cart";
+            MySqlCommand cmd = new MySqlCommand(query, _conn);
+
+            int result = await cmd.ExecuteNonQueryAsync();
+            if (result == 0)
+            {
+                return NotFound(new { message = "No data found to delete" });
+            }
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Error deleting data: {ex.Message}");
+        }
+        finally
+        {
+            await _conn.CloseAsync();
+        }
+        return Ok(new { message = "Cart deleted successfully" });
+    }
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteItem(int id)
+    {
+
+        try
+        {
+            _conn.Open();
+            string query = "delete from cart where id=@id";
+            MySqlCommand cmd = new MySqlCommand(query, _conn);
+            cmd.Parameters.AddWithValue("@id", id);
+
+            int result = await cmd.ExecuteNonQueryAsync();
+            if (result == 0)
+            {
+                return NotFound(new { message = "Not found Item Id" });
+            }
+        }
+        finally
+        {
+            await _conn.CloseAsync();
+        }
+        return Ok(new { Message = "Item deleted successfully" });
+    }
 }
 
 
