@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MySqlConnector;
 using Pizza;
@@ -6,6 +7,7 @@ using System.Collections.Generic;
 
 [Route("api/[controller]")]
 [ApiController]
+
 public class CartController : ControllerBase
 {
     private readonly MySqlConnection _conn;
@@ -16,7 +18,7 @@ public class CartController : ControllerBase
         _conn = new MySqlConnection(connectionString);
     }
 
-    [HttpPost]
+    [HttpPost("save")]
     public IActionResult SaveCart([FromBody] Cart cart)
     {
         if (cart == null)
@@ -27,13 +29,15 @@ public class CartController : ControllerBase
         try
         {
             _conn.Open();
-            string query = "INSERT INTO Cart (Pizza, Flavor, price) VALUES (@Taste, @Flavor, @price)";
+            string query = "INSERT INTO Cart (Pizza, Flavor, price,status,userid) VALUES (@Taste, @Flavor, @price,@status,@userid)";
             using (MySqlCommand cmd = new MySqlCommand(query, _conn))
             {
                 cmd.Parameters.AddWithValue("@Taste", cart.Taste);
                 cmd.Parameters.AddWithValue("@Flavor", cart.Flavor);
                 cmd.Parameters.AddWithValue("@price", cart.price);
-
+                cmd.Parameters.AddWithValue("@stats", cart.status);
+                cmd.Parameters.AddWithValue("@status", "Waiting");
+                cmd.Parameters.AddWithValue("@userid", cart.userid);
                 cmd.ExecuteNonQuery();
             }
         }
@@ -50,6 +54,7 @@ public class CartController : ControllerBase
     }
 
     [HttpGet]
+
     public IActionResult GetCart()
     {
         List<Cart> carts = new List<Cart>();
@@ -69,6 +74,7 @@ public class CartController : ControllerBase
                             Taste = reader.IsDBNull(reader.GetOrdinal("Pizza")) ? null : reader.GetString("Pizza"),
                             Flavor = reader.IsDBNull(reader.GetOrdinal("Flavor")) ? null : reader.GetString("Flavor"),
                             price = reader.GetDouble("price"),
+                            status = reader.IsDBNull(reader.GetOrdinal("status")) ? null : reader.GetString("status"),
                         };
 
                         carts.Add(cart);
@@ -138,6 +144,44 @@ public class CartController : ControllerBase
         }
         return Ok(new { Message = "Item deleted successfully" });
     }
-}
 
+
+
+    // Endpoint để cập nhật trạng thái đơn hàng
+    [HttpPut("{id}/status")]
+    public IActionResult UpdateOrderStatus(int id, [FromBody] string status)
+    {
+        if (string.IsNullOrEmpty(status))
+        {
+            return BadRequest(new { Message = "Invalid status." });
+        }
+
+        try
+        {
+            _conn.Open();
+            string query = "UPDATE Cart SET Status = @Status WHERE id = @id";
+            MySqlCommand cmd = new MySqlCommand(query, _conn);
+            cmd.Parameters.AddWithValue("@Status", status);
+            cmd.Parameters.AddWithValue("@id", id);
+            int rowsAffected = cmd.ExecuteNonQuery();
+
+            if (rowsAffected == 0)
+            {
+                return NotFound();
+            }
+
+            return Ok(new { Message = "Order status updated successfully." });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { Message = "An error occurred while updating order status.", Error = ex.Message });
+        }
+        finally
+        {
+            _conn.Close();
+        }
+
+    }
+
+}
 

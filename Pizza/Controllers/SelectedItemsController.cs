@@ -1,9 +1,11 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Pizza;
 using System.Collections.Generic;
 
 [Route("api/[controller]")]
 [ApiController]
+[Authorize]
 public class SelectedItemsController : ControllerBase
 {
     private static List<Taste> _selectedItems = new List<Taste>();

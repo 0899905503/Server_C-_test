@@ -16,6 +16,26 @@ build_property.GenerateRazorMetadataSourceChecksumAttributes =
 build_property.MSBuildProjectDirectory = D:\C#_IMT\MVC
 build_property._RazorSourceGeneratorDebug = 
 
+[D:/C\#_IMT/MVC/Views/Admin/Admin.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cQWRtaW4uY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/C\#_IMT/MVC/Views/Admin/Cart.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cQ2FydC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/C\#_IMT/MVC/Views/Admin/Createtaste.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cQ3JlYXRldGFzdGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/C\#_IMT/MVC/Views/Admin/Tastedetails.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cVGFzdGVkZXRhaWxzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/C\#_IMT/MVC/Views/Admin/Updatetaste.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cVXBkYXRldGFzdGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
 [D:/C\#_IMT/MVC/Views/Auth/Login.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQXV0aFxMb2dpbi5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
@@ -30,6 +50,10 @@ build_metadata.AdditionalFiles.CssScope =
 
 [D:/C\#_IMT/MVC/Views/Home/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/C\#_IMT/MVC/Views/Home/Orderpage.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxPcmRlcnBhZ2UuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
 [D:/C\#_IMT/MVC/Views/Home/Privacy.cshtml]

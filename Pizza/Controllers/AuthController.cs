@@ -50,7 +50,12 @@ public class AuthController : ControllerBase
                     {
                         Id = reader.GetInt32("id"),
                         Name = reader.IsDBNull(reader.GetOrdinal("Name")) ? null : reader.GetString("Name"),
-                        Username = reader.GetString("username")
+                        Username = reader.GetString("username"),
+                        Role = reader.IsDBNull(reader.GetOrdinal("role")) ? null : reader.GetString("role"),
+
+                        Phone_Number = reader.IsDBNull(reader.GetOrdinal("phone_number")) ? null : reader.GetString("phone_number"),
+                        Address = reader.IsDBNull(reader.GetOrdinal("address")) ? null : reader.GetString("address"),
+
                     };
                 }
             }

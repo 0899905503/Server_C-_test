@@ -1,0 +1,135 @@
+@{
+    ViewBag.title = "Cart";
+}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cart Page</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .cart-list {
+            list-style-type: none;
+            padding: 0;
+            width: 100%;
+            max-width: 600px;
+        }
+
+        .cart-item {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+
+        .cart-item p {
+            margin: 5px 0;
+        }
+
+        .cart-item label {
+            font-weight: bold;
+        }
+
+        .cart-item button {
+            padding: 5px 10px;
+            border: none;
+            background-color: #28a745;
+            color: white;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        .cart-item button:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Cart Details</h1>
+    <ul class="cart-list" id="cart-list">
+        <!-- Cart items will be added dynamically here -->
+    </ul>
+
+    <script>
+        async function fetchCartDetails() {
+            try {
+                const response = await fetch('http://localhost:5014/api/cart');
+                if (!response.ok) {
+                    throw new Error('Network response was not ok ' + response.statusText);
+                }
+                const cartData = await response.json();
+
+                const cartList = document.getElementById('cart-list');
+
+                // Clear any existing items
+                cartList.innerHTML = '';
+
+                // Loop through each item in the cart data and create list items
+                cartData.forEach(item => {
+                    const listItem = document.createElement('li');
+                    listItem.classList.add('cart-item');
+
+                    listItem.innerHTML = `
+                        <p><label>ID:</label> ${item.id}</p>
+                        <p><label>Taste:</label> ${item.taste}</p>
+                        <p><label>Flavor:</label> ${item.flavor}</p>
+                        <p><label>Price:</label> $${item.price}</p>
+                        <p><label>Status:</label> ${item.status}</p>
+                        <button id="btn-${item.id}" onclick="confirmItem(${item.id})">Confirm</button>
+                    `;
+
+                    cartList.appendChild(listItem);
+                });
+
+            } catch (error) {
+                console.error('There was a problem with the fetch operation:', error);
+            }
+        }
+
+        async function confirmItem(itemId) {
+            try {
+                const response = await fetch(`http://localhost:5014/api/cart/${itemId}/status`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify("delivering")
+                });
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok ' + response.statusText);
+                }
+
+                const result = await response.json();
+                alert(result.Message); // Hiển thị thông báo thành công
+
+                // Hide the button after confirmation
+                const btn = document.getElementById(`btn-${itemId}`);
+                if (btn) {
+                    btn.style.display = 'none';
+                }
+
+            } catch (error) {
+                console.error('There was a problem with the fetch operation:', error);
+                alert('An error occurred while confirming the cart item.');
+            }
+        }
+
+        fetchCartDetails(); // Gọi hàm fetchCartDetails() khi trang load
+    </script>
+</body>
+
+</html>

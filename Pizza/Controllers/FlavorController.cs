@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MySqlConnector;
 using System.Collections.Generic;
@@ -5,6 +6,7 @@ using System.Linq;
 
 [Route("api/flavors")]
 [ApiController]
+
 public class FlavorsController : ControllerBase
 {
 

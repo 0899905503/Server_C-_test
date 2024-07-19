@@ -5,7 +5,7 @@ builder.Services.AddControllersWithViews();
 
 // Add HttpClient service
 builder.Services.AddHttpClient();
-
+builder.Services.AddSession();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -24,6 +24,7 @@ app.UseAuthorization();
 // Map controllers
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Auth}/{action=Login}");
 
+app.UseSession();
 app.Run();

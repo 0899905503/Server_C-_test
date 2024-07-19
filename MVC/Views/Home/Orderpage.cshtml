@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Page</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .order-details {
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 5px;
+            width: 400px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .order-details h2 {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="order-details">
+        <h2>Order Details</h2>
+        <p id="order-taste"></p>
+        <p id="order-flavor"></p>
+        <p id="order-price"></p>
+    </div>
+
+    <script>
+        function getQueryParams() {
+            const params = new URLSearchParams(window.location.search);
+            return {
+                tasteId: params.get('Taste'),
+                flavor: params.get('Flavor'),
+                userid: params.get('UserId'),
+            };
+        }
+
+        async function fetchTasteById(tasteId) {
+            try {
+                const response = await fetch(`http://localhost:5014/api/taste/${tasteId}`);
+                if (!response.ok) {
+                    throw new Error('Network response was not ok ' + response.statusText);
+                }
+                const data = await response.json();
+                return data;
+            } catch (error) {
+                console.error('There was a problem with the fetch operation:', error);
+            }
+        }
+
+        async function fetchFlavorById(flavor) {
+            try {
+                const response = await fetch(`http://localhost:5014/api/flavors/${flavor}`);
+                if (!response.ok) {
+                    throw new Error('Network response was not ok ' + response.statusText);
+                }
+                const data = await response.json();
+                return data;
+            } catch (error) {
+                console.error('There was a problem with the fetch operation:', error);
+            }
+        }
+
+        const params = getQueryParams();
+        const tasteId = params.tasteId;
+        const flavor = params.flavor;
+
+
+        async function calculateTotalPrice() {
+            const taste = await fetchTasteById(tasteId);
+            const flavorData = await fetchFlavorById(flavor);
+
+            if (taste && flavorData) {
+                const totalPrice = taste.price + flavorData.price;
+                return totalPrice;
+            } else {
+                return null;
+            }
+        }
+
+
+        async function updateOrderDetails() {
+            const taste = await fetchTasteById(tasteId);
+            const flavorData = await fetchFlavorById(flavor);
+
+            if (taste) {
+                document.getElementById('order-taste').innerText = `Taste: ${taste.taste}`;
+            } else {
+                document.getElementById('order-taste').innerText = 'Taste not found';
+            }
+
+            if (flavorData) {
+                document.getElementById('order-flavor').innerText = `Flavor: ${flavorData.flavor}`;
+                document.getElementById('order-price').innerText = `Price: $${flavorData.price}`;
+            } else {
+                document.getElementById('order-flavor').innerText = 'Flavor not found';
+            }
+
+            const totalPrice = await calculateTotalPrice();
+            if (totalPrice !== null) {
+                document.getElementById('order-price').innerText = `Total Price: $${totalPrice}`;
+            } else {
+                document.getElementById('order-price').innerText = 'Unable to calculate total price';
+            }
+        }
+
+        async function saveToCart() {
+            const params = getQueryParams();
+            const tasteId = params.tasteId;
+            const flavor = params.flavor;
+            const userid = params.userid;
+            const taste = await fetchTasteById(tasteId);
+            const flavorData = await fetchFlavorById(flavor);
+
+            if (!taste || !flavorData) {
+                alert('Taste or Flavor not found. Unable to add to cart.');
+                return;
+            }
+
+            const cartData = {
+                taste: taste.taste,
+                flavor: flavorData.flavor,
+                price: taste.price + flavorData.price,
+                userid: userid,
+                status: "Waiting"
+            };
+
+            try {
+                const response = await fetch('http://localhost:5014/api/cart/save', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(cartData)
+                });
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok ' + response.statusText);
+                }
+
+                const result = await response.json();
+                alert(result.Message);
+                window.location.href = 'Cart';
+            } catch (error) {
+
+            }
+        }
+
+
+        updateOrderDetails();
+    </script>
+
+
+    <button type="button" onclick="saveToCart()">Mua hàng</button>
+
+</body>
+
+</html>

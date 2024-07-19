@@ -28,3 +28,7 @@ D:\C#_IMT\MVC\obj\Debug\net7.0\refint\MVC.dll
 D:\C#_IMT\MVC\obj\Debug\net7.0\MVC.pdb
 D:\C#_IMT\MVC\obj\Debug\net7.0\MVC.genruntimeconfig.cache
 D:\C#_IMT\MVC\obj\Debug\net7.0\ref\MVC.dll
+D:\C#_IMT\MVC\bin\Debug\net7.0\System.Security.Permissions.dll
+D:\C#_IMT\MVC\obj\Debug\net7.0\MVC.csproj.AssemblyReference.cache
+D:\C#_IMT\MVC\obj\Debug\net7.0\MVC.csproj.CopyComplete
+D:\C#_IMT\MVC\bin\Debug\net7.0\Newtonsoft.Json.dll

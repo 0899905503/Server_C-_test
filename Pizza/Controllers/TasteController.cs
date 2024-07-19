@@ -1,4 +1,5 @@
 
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MySqlConnector;
 using Pizza;
@@ -8,6 +9,7 @@ namespace YourNamespace.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+
     public class TasteController : ControllerBase
     {
         private readonly MySqlConnection _conn;
@@ -82,6 +84,61 @@ namespace YourNamespace.Controllers
 
             return Ok(taste);
 
+        }
+        [HttpPut("update_price/{id}")]
+        public IActionResult UpdateTastePrice(int id, [FromBody] Taste updatedTaste)
+        {
+            if (updatedTaste == null || updatedTaste.id != id)
+            {
+                return BadRequest();
+            }
+
+            try
+            {
+                _conn.Open();
+                string query = "UPDATE Type SET price = @price WHERE id = @id";
+                MySqlCommand cmd = new MySqlCommand(query, _conn);
+                cmd.Parameters.AddWithValue("@price", updatedTaste.price);
+                cmd.Parameters.AddWithValue("@id", id);
+
+                int result = cmd.ExecuteNonQuery();
+                if (result == 0)
+                {
+                    return NotFound();
+                }
+            }
+            finally
+            {
+                _conn.Close();
+            }
+
+            return NoContent();
+        }
+        [HttpPost("create_taste")]
+        public ActionResult<Taste> CreateTaste([FromBody] Taste newTaste)
+        {
+            if (newTaste == null)
+            {
+                return BadRequest();
+            }
+
+            try
+            {
+                _conn.Open();
+                string query = "INSERT INTO Type (taste, price) VALUES (@taste, @price)";
+                MySqlCommand cmd = new MySqlCommand(query, _conn);
+                cmd.Parameters.AddWithValue("@taste", newTaste.taste);
+                cmd.Parameters.AddWithValue("@price", newTaste.price);
+
+                cmd.ExecuteNonQuery();
+                newTaste.id = (int)cmd.LastInsertedId;
+            }
+            finally
+            {
+                _conn.Close();
+            }
+
+            return CreatedAtAction(nameof(GetTasteById), new { id = newTaste.id }, newTaste);
         }
     }
 }

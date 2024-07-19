@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "ZqUdqfyrog6Sgwk/jsv25sginb5rZIbNJrrlQ1ApRDU=",
+  "Hash": "UWfbTbJeNbRaz7Wm9jSBOcVnat2EsGMeflSAbqFdySg=",
   "Source": "MVC",
   "BasePath": "_content/MVC",
   "Mode": "Default",
@@ -51,6 +51,40 @@
       "OriginalItemSpec": "D:\\C#_IMT\\MVC\\obj\\Debug\\net7.0\\scopedcss\\projectbundle\\MVC.bundle.scp.css"
     },
     {
+      "Identity": "D:\\C#_IMT\\MVC\\wwwroot\\css\\.DS_Store",
+      "SourceId": "MVC",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\C#_IMT\\MVC\\wwwroot\\",
+      "BasePath": "_content/MVC",
+      "RelativePath": "css/.DS_Store",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\css\\.DS_Store"
+    },
+    {
+      "Identity": "D:\\C#_IMT\\MVC\\wwwroot\\css\\create_style.css",
+      "SourceId": "MVC",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\C#_IMT\\MVC\\wwwroot\\",
+      "BasePath": "_content/MVC",
+      "RelativePath": "css/create_style.css",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\css\\create_style.css"
+    },
+    {
       "Identity": "D:\\C#_IMT\\MVC\\wwwroot\\css\\login_style.css",
       "SourceId": "MVC",
       "SourceType": "Discovered",
@@ -68,6 +102,23 @@
       "OriginalItemSpec": "wwwroot\\css\\login_style.css"
     },
     {
+      "Identity": "D:\\C#_IMT\\MVC\\wwwroot\\css\\pizza_style.css",
+      "SourceId": "MVC",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\C#_IMT\\MVC\\wwwroot\\",
+      "BasePath": "_content/MVC",
+      "RelativePath": "css/pizza_style.css",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\css\\pizza_style.css"
+    },
+    {
       "Identity": "D:\\C#_IMT\\MVC\\wwwroot\\css\\signup_style.css",
       "SourceId": "MVC",
       "SourceType": "Discovered",
@@ -83,23 +134,6 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\css\\signup_style.css"
-    },
-    {
-      "Identity": "D:\\C#_IMT\\MVC\\wwwroot\\css\\site.css",
-      "SourceId": "MVC",
-      "SourceType": "Discovered",
-      "ContentRoot": "D:\\C#_IMT\\MVC\\wwwroot\\",
-      "BasePath": "_content/MVC",
-      "RelativePath": "css/site.css",
-      "AssetKind": "All",
-      "AssetMode": "All",
-      "AssetRole": "Primary",
-      "RelatedAsset": "",
-      "AssetTraitName": "",
-      "AssetTraitValue": "",
-      "CopyToOutputDirectory": "Never",
-      "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot\\css\\site.css"
     },
     {
       "Identity": "D:\\C#_IMT\\MVC\\wwwroot\\favicon.ico",

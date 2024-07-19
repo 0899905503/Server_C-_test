@@ -1,0 +1,107 @@
+ .pizza-list {
+     display: flex;
+     flex-wrap: wrap;
+     justify-content: space-around;
+     list-style-type: none;
+     padding: 0;
+ }
+
+ .pizza-item {
+     text-align: center;
+     cursor: pointer;
+     margin: 20px;
+     padding: 10px;
+     border: 1px solid #ccc;
+     border-radius: 5px;
+     width: 200px;
+     transition: transform 0.3s ease-in-out;
+     position: relative;
+ }
+
+ .pizza-item:hover {
+     transform: scale(1.05);
+ }
+
+ .pizza-image {
+     width: 100%;
+     height: auto;
+     border-radius: 5px;
+ }
+
+ .pizza-radio {
+     position: absolute;
+     top: 10px;
+     right: 10px;
+     opacity: 0;
+     width: 25px;
+     height: 25px;
+     cursor: pointer;
+ }
+
+ .pizza-radio:checked+.pizza-item {
+     border-color: #007bff;
+ }
+
+ .pizza-radio:checked+.pizza-item:hover {
+     transform: scale(1.05);
+ }
+
+ .pizza-radio:checked+.pizza-item::after {
+     content: '';
+     position: absolute;
+     top: -5px;
+     right: -5px;
+     width: 15px;
+     height: 15px;
+     background-color: #007bff;
+     border-radius: 50%;
+ }
+
+ .buy-button {
+     display: block;
+     margin: 20px auto;
+     padding: 10px 20px;
+     background-color: #007bff;
+     color: #fff;
+     border: none;
+     border-radius: 5px;
+     cursor: pointer;
+ }
+
+ .pizza-list {
+     display: flex;
+     justify-content: space-around;
+     /* Cách giãn đều các phần tử bên trong */
+     list-style-type: none;
+     padding: 0;
+     margin: 20px 0;
+     /* Khoảng cách top và bottom */
+ }
+
+ .pizza-item {
+     text-align: center;
+     cursor: pointer;
+     margin: 0 10px;
+     /* Khoảng cách left và right giữa các món pizza */
+     padding: 10px;
+     border: 1px solid #ccc;
+     border-radius: 5px;
+     width: 200px;
+     transition: transform 0.3s ease-in-out;
+     position: relative;
+ }
+
+ .flavor-options {
+     margin-top: 60px;
+     /* Khoảng cách giữa danh sách pizza và radiobox hương vị */
+ }
+
+ .flavor-radio+label {
+     display: inline-block;
+     margin-right: 200px;
+     /* Khoảng cách giữa các radiobox hương vị */
+     padding: 5px 10px;
+     border: 1px solid black;
+     border-radius: 5px;
+     cursor: pointer;
+ }

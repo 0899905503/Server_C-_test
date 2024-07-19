@@ -49,9 +49,8 @@ namespace MVC.Controllers
                 if (response.IsSuccessStatusCode)
                 {
                     var tokenResponse = await response.Content.ReadAsStringAsync();
-                    // Deserialize tokenResponse if needed
-                    // var token = JsonSerializer.Deserialize<TokenResponse>(tokenResponse);
-                    return RedirectToAction("Homepage", "home"); // Redirect to success view or return token
+                    HttpContext.Session.SetString("Token", tokenResponse);
+                    return RedirectToAction("Homepage", "home"); // Chuyển hướng đến trang Homepage
                 }
                 else
                 {
@@ -66,10 +65,12 @@ namespace MVC.Controllers
             }
         }
 
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
+
 }

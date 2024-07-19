@@ -1,0 +1,89 @@
+@{
+    ViewBag.Title = "Updatetaste";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Taste</title>
+    <link rel="stylesheet" type="text/css" href="/css/create_style.css">
+</head>
+
+<body>
+    <form id="update-taste-form">
+        <h2>Edit Taste</h2>
+        <div>
+            <label for="id">Id:</label>
+            <input type="text" id="id" name="id" required readonly>
+        </div>
+        <div>
+            <label for="taste">Taste Name:</label>
+            <input type="text" id="taste" name="taste" required>
+        </div>
+        <div>
+            <label for="price">Price:</label>
+            <input type="text" id="price" name="price" required>
+        </div>
+        <button type="submit">Update Taste</button>
+    </form>
+
+    <script>
+        function getQueryParams() {
+            const params = new URLSearchParams(window.location.search);
+            return {
+                id: params.get('id'),
+                taste: params.get('taste'),
+                price: params.get('price')
+            };
+        }
+
+        function populateForm(params) {
+            document.getElementById('id').value = params.id;
+            document.getElementById('taste').value = params.taste;
+            document.getElementById('price').value = params.price;
+        }
+
+        document.addEventListener('DOMContentLoaded', (event) => {
+            const queryParams = getQueryParams();
+            populateForm(queryParams);
+        });
+
+        document.getElementById('update-taste-form').addEventListener('submit', function (event) {
+            event.preventDefault();
+            const id = parseInt(document.getElementById('id').value);
+            const taste = document.getElementById('taste').value;
+            const price = parseInt(document.getElementById('price').value);
+
+            const tasteData = {
+                id: id,
+                taste: taste,
+                price: price
+            };
+
+            fetch(`http://localhost:5014/api/Taste/update_price/${id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(tasteData)
+            })
+                .then(response => {
+                    if (response.ok) {
+                        alert('Taste updated successfully!');
+                        document.getElementById('update-taste-form').reset();
+                    } else {
+                        alert('Failed to update taste.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while updating the taste.');
+                });
+        });
+    </script>
+</body>
+
+</html>

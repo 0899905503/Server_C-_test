@@ -5,16 +5,24 @@
       "PackagePath": "staticwebassets\\MVC.bundle.scp.css"
     },
     {
+      "Id": "D:\\C#_IMT\\MVC\\wwwroot\\css\\.DS_Store",
+      "PackagePath": "staticwebassets\\css\\.DS_Store"
+    },
+    {
+      "Id": "D:\\C#_IMT\\MVC\\wwwroot\\css\\create_style.css",
+      "PackagePath": "staticwebassets\\css\\create_style.css"
+    },
+    {
       "Id": "D:\\C#_IMT\\MVC\\wwwroot\\css\\login_style.css",
       "PackagePath": "staticwebassets\\css\\login_style.css"
     },
     {
-      "Id": "D:\\C#_IMT\\MVC\\wwwroot\\css\\signup_style.css",
-      "PackagePath": "staticwebassets\\css\\signup_style.css"
+      "Id": "D:\\C#_IMT\\MVC\\wwwroot\\css\\pizza_style.css",
+      "PackagePath": "staticwebassets\\css\\pizza_style.css"
     },
     {
-      "Id": "D:\\C#_IMT\\MVC\\wwwroot\\css\\site.css",
-      "PackagePath": "staticwebassets\\css\\site.css"
+      "Id": "D:\\C#_IMT\\MVC\\wwwroot\\css\\signup_style.css",
+      "PackagePath": "staticwebassets\\css\\signup_style.css"
     },
     {
       "Id": "D:\\C#_IMT\\MVC\\wwwroot\\favicon.ico",

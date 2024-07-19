@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\C#_IMT\\Pizza\\Pizza.csproj": {}
+    "D:\\C#_IMT\\pizza\\Pizza.csproj": {}
   },
   "projects": {
-    "D:\\C#_IMT\\Pizza\\Pizza.csproj": {
+    "D:\\C#_IMT\\pizza\\Pizza.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\C#_IMT\\Pizza\\Pizza.csproj",
+        "projectUniqueName": "D:\\C#_IMT\\pizza\\Pizza.csproj",
         "projectName": "Pizza",
-        "projectPath": "D:\\C#_IMT\\Pizza\\Pizza.csproj",
+        "projectPath": "D:\\C#_IMT\\pizza\\Pizza.csproj",
         "packagesPath": "C:\\Users\\vongo\\.nuget\\packages\\",
-        "outputPath": "D:\\C#_IMT\\Pizza\\obj\\",
+        "outputPath": "D:\\C#_IMT\\pizza\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\vongo\\AppData\\Roaming\\NuGet\\NuGet.Config",
