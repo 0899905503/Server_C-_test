@@ -1,6 +1,6 @@
 @{
 	var token = ViewBag.token;
-	var userid = ViewBag.userid;
+	var UserId = ViewBag.UserId;
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -89,7 +89,7 @@
 </head>
 
 <body>
-
+	<button>Userid : @ViewBag.UserId </button>
 	<div class="pizza-list">
 		<label class="pizza-item">
 			<input class="pizza-radio" type="radio" name="pizza" value="1">
@@ -141,20 +141,20 @@
 	<form id="order-form" action="Orderpage" method="get">
 		<input type="hidden" name="Taste" id="taste-input">
 		<input type="hidden" name="Flavor" id="flavor-input">
-		<input type="hidden" name="UserId" id="user-id-input" value="@userid">
+		<input type="hidden" name="UserId" id="user-id-input" value="@UserId">
 		<button type="submit" class="buy-button">Mua hàng</button>
 	</form>
-
+	<a href="Usercart" class="buy-button">My Cart</a>
 	<script>
 
 		document.getElementById('order-form').addEventListener('submit', function (event) {
 			const selectedPizza = document.querySelector('input[name="pizza"]:checked');
 			const selectedFlavor = document.querySelector('input[name="flavor"]:checked');
-			const userid = "@userid";
+			const UserId = "@UserId";
 			if (selectedPizza && selectedFlavor) {
 				document.getElementById('taste-input').value = selectedPizza.value;
 				document.getElementById('flavor-input').value = selectedFlavor.value;
-				document.getElementById('user-id-input').value = userid;
+				document.getElementById('user-id-input').value = UserId;
 			} else {
 				event.preventDefault();
 				alert('Vui lòng chọn cả loại pizza và hương vị.');

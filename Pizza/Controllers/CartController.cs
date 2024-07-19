@@ -93,6 +93,55 @@ public class CartController : ControllerBase
 
         return Ok(carts);
     }
+    [HttpGet("{userid}")]
+    public ActionResult<IEnumerable<Cart>> GetTasteById(int userid)
+    {
+        var cartItems = new List<Cart>();
+
+        try
+        {
+            _conn.Open();
+            string query = "SELECT * FROM cart WHERE userid = @userid";
+            using (var cmd = new MySqlCommand(query, _conn))
+            {
+                cmd.Parameters.AddWithValue("@userid", userid);
+
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        var cartItem = new Cart
+                        {
+                            Id = reader.GetInt32("id"),
+                            Taste = reader.IsDBNull(reader.GetOrdinal("Pizza")) ? null : reader.GetString("Pizza"),
+                            Flavor = reader.IsDBNull(reader.GetOrdinal("Flavor")) ? null : reader.GetString("Flavor"),
+                            price = reader.GetDouble("price"),
+                            status = reader.IsDBNull(reader.GetOrdinal("status")) ? null : reader.GetString("status"),
+                        };
+
+                        cartItems.Add(cartItem);
+                    }
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            // Log exception if needed
+            return StatusCode(500, new { Message = "An error occurred while retrieving cart items.", Error = ex.Message });
+        }
+        finally
+        {
+            _conn.Close();
+        }
+
+        if (cartItems.Count == 0)
+        {
+            return NotFound(new { Message = "No items found for the specified user." });
+        }
+
+        return Ok(cartItems);
+    }
+
     [HttpDelete("clear")]
     public async Task<IActionResult> ClearCartAsync()
     {

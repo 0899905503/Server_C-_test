@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using MVC.Models;
 using Newtonsoft.Json.Linq;
 
@@ -37,25 +38,30 @@ namespace MVC.Controllers
         public IActionResult Homepage()
         {
             var token = HttpContext.Session.GetString("Token");
+            var role = HttpContext.Session.GetString("Role");
 
-            if (token != null)
+            if (!string.IsNullOrEmpty(token))
             {
                 // Pass token to view
                 ViewBag.Token = token;
 
-                try
+                var userJson = HttpContext.Session.GetString("User");
+                if (!string.IsNullOrEmpty(userJson))
                 {
-                    var tokenObject = JObject.Parse(token);
-                    var userId = tokenObject["user"]?["id"]?.ToString();
+                    var user = JObject.Parse(userJson);
+                    var userId = user["id"]?.ToString();
                     ViewBag.UserId = userId;
                 }
-                catch (Exception ex)
-                {
-                    // Handle the error
-                    _logger.LogError("Error parsing token: " + ex.Message);
-                }
 
-                return View();
+                if (!string.IsNullOrEmpty(role) && role == "admin")
+                {
+                    return RedirectToAction("Admin", "Admin");
+                }
+                else
+                {
+                    // Process as a normal user
+                    return View();
+                }
             }
             else
             {
@@ -66,6 +72,7 @@ namespace MVC.Controllers
 
         public IActionResult Orderpage()
         {
+
             return View();
         }
 

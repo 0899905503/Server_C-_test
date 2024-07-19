@@ -53,20 +53,22 @@ namespace MVC.Controllers
                     var responseObject = JObject.Parse(jsonResponse);
 
                     var token = responseObject["token"]?.ToString();
+                    var user = responseObject["user"]?.ToString();
                     var role = responseObject["user"]?["role"]?.ToString();
 
-                    // Save the token and role in session
+                    // Save the token, user and role in session
                     HttpContext.Session.SetString("Token", token);
+                    HttpContext.Session.SetString("User", user);
                     HttpContext.Session.SetString("Role", role);
 
                     // Redirect based on role
                     if (role == "admin")
                     {
-                        return RedirectToAction("Admin", "Admin"); // Change to the appropriate admin controller/action
+                        return RedirectToAction("Admin", "Admin");
                     }
                     else
                     {
-                        return RedirectToAction("Homepage", "Home"); // Change to the appropriate home controller/action
+                        return RedirectToAction("Homepage", "Home");
                     }
                 }
                 else

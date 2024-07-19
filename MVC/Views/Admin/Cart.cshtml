@@ -101,7 +101,7 @@
 
         async function confirmItem(itemId) {
             try {
-                const response = await fetch(`http://localhost:5014/api/Cart/${itemId}/status`, {
+                const response = await fetch(`http://localhost:5014/api/art/${itemId}/status`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json'

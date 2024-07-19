@@ -109,7 +109,7 @@
 
         async function received(itemId) {
             try {
-                const response = await fetch(`http://localhost:5014/api/Cart/${itemId}/status`, {
+                const response = await fetch(`http://localhost:5014/api/C/${itemId}/status`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json'
