@@ -56,10 +56,9 @@
                 if (!response.ok) {
                     throw new Error('Network response was not ok ' + response.statusText);
                 }
-                const data = await response.json();
-                return data;
+                return await response.json();
             } catch (error) {
-                console.error('There was a problem with the fetch operation:', error);
+                console.error('Error fetching taste:', error);
             }
         }
 
@@ -69,10 +68,9 @@
                 if (!response.ok) {
                     throw new Error('Network response was not ok ' + response.statusText);
                 }
-                const data = await response.json();
-                return data;
+                return await response.json();
             } catch (error) {
-                console.error('There was a problem with the fetch operation:', error);
+                console.error('Error fetching flavor:', error);
             }
         }
 
@@ -80,19 +78,11 @@
         const tasteId = params.tasteId;
         const flavor = params.flavor;
 
-
         async function calculateTotalPrice() {
             const taste = await fetchTasteById(tasteId);
             const flavorData = await fetchFlavorById(flavor);
-
-            if (taste && flavorData) {
-                const totalPrice = taste.price + flavorData.price;
-                return totalPrice;
-            } else {
-                return null;
-            }
+            return taste && flavorData ? taste.price + flavorData.price : null;
         }
-
 
         async function updateOrderDetails() {
             const taste = await fetchTasteById(tasteId);
@@ -112,11 +102,9 @@
             }
 
             const totalPrice = await calculateTotalPrice();
-            if (totalPrice !== null) {
-                document.getElementById('order-price').innerText = `Total Price: $${totalPrice}`;
-            } else {
-                document.getElementById('order-price').innerText = 'Unable to calculate total price';
-            }
+            document.getElementById('order-price').innerText = totalPrice !== null
+                ? `Total Price: $${totalPrice}`
+                : 'Unable to calculate total price';
         }
 
         async function saveToCart() {
@@ -155,16 +143,15 @@
 
                 const result = await response.json();
                 alert(result.Message);
-                window.location.href = 'Cart';
+                window.location.href = `Usercart?UserId=${userid}`;
             } catch (error) {
-
+                console.error('Error saving to cart:', error);
+                alert('An error occurred while adding to the cart.');
             }
         }
 
-
         updateOrderDetails();
     </script>
-
 
     <button type="button" onclick="saveToCart()">Mua hàng</button>
 

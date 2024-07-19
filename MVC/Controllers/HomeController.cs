@@ -3,60 +3,76 @@ using Microsoft.AspNetCore.Mvc;
 using MVC.Models;
 using Newtonsoft.Json.Linq;
 
-namespace MVC.Controllers;
-
-public class HomeController : Controller
+namespace MVC.Controllers
 {
-    private readonly ILogger<HomeController> _logger;
-
-    public HomeController(ILogger<HomeController> logger)
+    public class HomeController : Controller
     {
-        _logger = logger;
-    }
+        private readonly ILogger<HomeController> _logger;
 
-    public IActionResult Index()
-    {
-        return View();
-    }
-
-    public IActionResult Privacy()
-    {
-        return View();
-    }
-    public IActionResult Login()
-    {
-        return View();
-    }
-    public IActionResult Homepage()
-    {
-
-        var token = HttpContext.Session.GetString("Token");
-
-        if (token != null)
+        public HomeController(ILogger<HomeController> logger)
         {
-            // Pass token to view
-            ViewBag.Token = token;
-            var tokenObject = JObject.Parse(token);
-            var userId = tokenObject["user"]?["id"]?.ToString();
-            ViewBag.UserId = userId;
+            _logger = logger;
+        }
+
+        public IActionResult Index()
+        {
             return View();
         }
-        else
+
+        public IActionResult Privacy()
         {
-            // Handle case where token is not available
-            return RedirectToAction("Homepage", "home");
+            return View();
         }
-    }
 
-    public IActionResult Orderpage()
-    {
-        return View();
-    }
+        public IActionResult Login()
+        {
+            return View();
+        }
 
+        public IActionResult Usercart()
+        {
+            return View();
+        }
 
-    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-    public IActionResult Error()
-    {
-        return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        public IActionResult Homepage()
+        {
+            var token = HttpContext.Session.GetString("Token");
+
+            if (token != null)
+            {
+                // Pass token to view
+                ViewBag.Token = token;
+
+                try
+                {
+                    var tokenObject = JObject.Parse(token);
+                    var userId = tokenObject["user"]?["id"]?.ToString();
+                    ViewBag.UserId = userId;
+                }
+                catch (Exception ex)
+                {
+                    // Handle the error
+                    _logger.LogError("Error parsing token: " + ex.Message);
+                }
+
+                return View();
+            }
+            else
+            {
+                // Handle case where token is not available
+                return RedirectToAction("Login", "Auth");
+            }
+        }
+
+        public IActionResult Orderpage()
+        {
+            return View();
+        }
+
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        public IActionResult Error()
+        {
+            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
     }
 }

@@ -1,13 +1,14 @@
 @{
-    ViewBag.title = "Cart";
+    ViewBag.Title = "usercart";
 }
+
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cart Page</title>
+    <title>usercart Page</title>
 
     <style>
         body {
@@ -20,29 +21,29 @@
             padding: 20px;
         }
 
-        .cart-list {
+        .usercart-list {
             list-style-type: none;
             padding: 0;
             width: 100%;
             max-width: 600px;
         }
 
-        .cart-item {
+        .usercart-item {
             border: 1px solid #ddd;
             border-radius: 5px;
             padding: 10px;
             margin-bottom: 10px;
         }
 
-        .cart-item p {
+        .usercart-item p {
             margin: 5px 0;
         }
 
-        .cart-item label {
+        .usercart-item label {
             font-weight: bold;
         }
 
-        .cart-item button {
+        .usercart-item button {
             padding: 5px 10px;
             border: none;
             background-color: #28a745;
@@ -51,36 +52,43 @@
             cursor: pointer;
         }
 
-        .cart-item button:hover {
+        .usercart-item button:hover {
             background-color: #218838;
         }
     </style>
 </head>
 
 <body>
-    <h1>Cart Details</h1>
-    <ul class="cart-list" id="cart-list">
-        <!-- Cart items will be added dynamically here -->
+    <h1>My Cart Details</h1>
+    <ul class="usercart-list" id="usercart-list">
+        <!-- usercart items will be added dynamically here -->
     </ul>
 
     <script>
-        async function fetchCartDetails() {
+        function getQueryParams() {
+            const params = new URLSearchParams(window.location.search);
+            return {
+                userid: params.get('UserId'),
+            };
+        }
+
+        async function fetchusercartDetails(userid) {
             try {
-                const response = await fetch('http://localhost:5014/api/cart');
+                const response = await fetch(`http://localhost:5014/api/Cart/${userid}`);
                 if (!response.ok) {
                     throw new Error('Network response was not ok ' + response.statusText);
                 }
-                const cartData = await response.json();
+                const usercartData = await response.json();
 
-                const cartList = document.getElementById('cart-list');
+                const usercartList = document.getElementById('usercart-list');
 
                 // Clear any existing items
-                cartList.innerHTML = '';
+                usercartList.innerHTML = '';
 
-                // Loop through each item in the cart data and create list items
-                cartData.forEach(item => {
+                // Loop through each item in the usercart data and create list items
+                usercartData.forEach(item => {
                     const listItem = document.createElement('li');
-                    listItem.classList.add('cart-item');
+                    listItem.classList.add('usercart-item');
 
                     listItem.innerHTML = `
                         <p><label>ID:</label> ${item.id}</p>
@@ -88,10 +96,10 @@
                         <p><label>Flavor:</label> ${item.flavor}</p>
                         <p><label>Price:</label> $${item.price}</p>
                         <p><label>Status:</label> ${item.status}</p>
-                        <button id="btn-${item.id}" onclick="confirmItem(${item.id})">Confirm</button>
+                        <button id="btn-${item.id}" onclick="received(${item.id})">Confirm</button>
                     `;
 
-                    cartList.appendChild(listItem);
+                    usercartList.appendChild(listItem);
                 });
 
             } catch (error) {
@@ -99,14 +107,14 @@
             }
         }
 
-        async function confirmItem(itemId) {
+        async function received(itemId) {
             try {
                 const response = await fetch(`http://localhost:5014/api/Cart/${itemId}/status`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify("delivering")
+                    body: JSON.stringify("received")
                 });
 
                 if (!response.ok) {
@@ -114,7 +122,7 @@
                 }
 
                 const result = await response.json();
-                alert(result.Message); // Hiển thị thông báo thành công
+                alert(result.Message); // Display success message
 
                 // Hide the button after confirmation
                 const btn = document.getElementById(`btn-${itemId}`);
@@ -124,11 +132,13 @@
 
             } catch (error) {
                 console.error('There was a problem with the fetch operation:', error);
-                alert('An error occurred while confirming the cart item.');
+                alert('An error occurred while confirming the usercart item.');
             }
         }
 
-        fetchCartDetails(); 
+        // Get user ID from query parameters and fetch usercart details
+        const params = getQueryParams();
+        fetchusercartDetails(params.userid);
     </script>
 </body>
 

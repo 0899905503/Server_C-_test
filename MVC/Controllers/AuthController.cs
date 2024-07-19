@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using MVC.Models;
+using Newtonsoft.Json.Linq;
 
 namespace MVC.Controllers
 {
@@ -48,23 +49,38 @@ namespace MVC.Controllers
 
                 if (response.IsSuccessStatusCode)
                 {
-                    var tokenResponse = await response.Content.ReadAsStringAsync();
-                    HttpContext.Session.SetString("Token", tokenResponse);
-                    return RedirectToAction("Homepage", "home"); // Chuyển hướng đến trang Homepage
+                    var jsonResponse = await response.Content.ReadAsStringAsync();
+                    var responseObject = JObject.Parse(jsonResponse);
+
+                    var token = responseObject["token"]?.ToString();
+                    var role = responseObject["user"]?["role"]?.ToString();
+
+                    // Save the token and role in session
+                    HttpContext.Session.SetString("Token", token);
+                    HttpContext.Session.SetString("Role", role);
+
+                    // Redirect based on role
+                    if (role == "admin")
+                    {
+                        return RedirectToAction("Admin", "Admin"); // Change to the appropriate admin controller/action
+                    }
+                    else
+                    {
+                        return RedirectToAction("Homepage", "Home"); // Change to the appropriate home controller/action
+                    }
                 }
                 else
                 {
                     ViewBag.ErrorMessage = "Invalid username or password";
-                    return View("Login"); // Redirect back to login view with error message
+                    return View("Login");
                 }
             }
             catch (Exception ex)
             {
                 ViewBag.ErrorMessage = ex.Message;
-                return View("Login"); // Redirect back to login view with error message
+                return View("Login");
             }
         }
-
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
@@ -72,5 +88,4 @@ namespace MVC.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
-
 }
