@@ -1,6 +1,6 @@
 public class Flavor
 {
-    public int id { get; set; }
+    public int Id { get; set; }
     public string? flavor { get; set; }
-    public double price { get; set; }
+    public double Price { get; set; }
 }

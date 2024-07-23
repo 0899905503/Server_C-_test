@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MySqlConnector;
 using Pizza;
+using Pizza.Models;
 using System.Collections.Generic;
 
 namespace YourNamespace.Controllers
@@ -37,9 +38,9 @@ namespace YourNamespace.Controllers
                 {
                     Taste taste = new Taste
                     {
-                        id = reader.GetInt32("id"),
+                        Id = reader.GetInt32("Id"),
                         taste = reader.IsDBNull(reader.GetOrdinal("taste")) ? null : reader.GetString("taste"),
-                        price = reader.GetDouble("price")
+                        Price = reader.GetDouble("Price")
                     };
 
                     tastes.Add(taste);
@@ -54,24 +55,24 @@ namespace YourNamespace.Controllers
 
             return Ok(tastes);
         }
-        [HttpGet("{id}")]
-        public ActionResult<IEnumerable<Taste>> GetTasteById(int id)
+        [HttpGet("{Id}")]
+        public ActionResult<IEnumerable<Taste>> GetTasteById(int Id)
         {
             Taste taste = null;
             try
             {
                 _conn.Open();
-                string query = "Select*from Type where id=@id";
+                string query = "Select*from Type where Id=@Id";
                 MySqlCommand cmd = new MySqlCommand(query, _conn);
-                cmd.Parameters.AddWithValue("@id", id);
+                cmd.Parameters.AddWithValue("@Id", Id);
                 MySqlDataReader reader = cmd.ExecuteReader();
                 if (reader.Read())
                 {
                     taste = new Taste
                     {
-                        id = reader.GetInt32("id"),
+                        Id = reader.GetInt32("Id"),
                         taste = reader.IsDBNull(reader.GetOrdinal("taste")) ? null : reader.GetString("taste"),
-                        price = reader.GetDouble("price")
+                        Price = reader.GetDouble("Price")
                     };
                 }
                 reader.Close();
@@ -85,10 +86,10 @@ namespace YourNamespace.Controllers
             return Ok(taste);
 
         }
-        [HttpPut("update_price/{id}")]
-        public IActionResult UpdateTastePrice(int id, [FromBody] Taste updatedTaste)
+        [HttpPut("update_Price/{Id}")]
+        public IActionResult UpdateTastePrice(int Id, [FromBody] Taste updatedTaste)
         {
-            if (updatedTaste == null || updatedTaste.id != id)
+            if (updatedTaste == null || updatedTaste.Id != Id)
             {
                 return BadRequest();
             }
@@ -96,10 +97,10 @@ namespace YourNamespace.Controllers
             try
             {
                 _conn.Open();
-                string query = "UPDATE Type SET price = @price WHERE id = @id";
+                string query = "UPDATE Type SET Price = @Price WHERE Id = @Id";
                 MySqlCommand cmd = new MySqlCommand(query, _conn);
-                cmd.Parameters.AddWithValue("@price", updatedTaste.price);
-                cmd.Parameters.AddWithValue("@id", id);
+                cmd.Parameters.AddWithValue("@Price", updatedTaste.Price);
+                cmd.Parameters.AddWithValue("@Id", Id);
 
                 int result = cmd.ExecuteNonQuery();
                 if (result == 0)
@@ -125,20 +126,20 @@ namespace YourNamespace.Controllers
             try
             {
                 _conn.Open();
-                string query = "INSERT INTO Type (taste, price) VALUES (@taste, @price)";
+                string query = "INSERT INTO Type (taste, Price) VALUES (@taste, @Price)";
                 MySqlCommand cmd = new MySqlCommand(query, _conn);
                 cmd.Parameters.AddWithValue("@taste", newTaste.taste);
-                cmd.Parameters.AddWithValue("@price", newTaste.price);
+                cmd.Parameters.AddWithValue("@Price", newTaste.Price);
 
                 cmd.ExecuteNonQuery();
-                newTaste.id = (int)cmd.LastInsertedId;
+                newTaste.Id = (int)cmd.LastInsertedId;
             }
             finally
             {
                 _conn.Close();
             }
 
-            return CreatedAtAction(nameof(GetTasteById), new { id = newTaste.id }, newTaste);
+            return CreatedAtAction(nameof(GetTasteById), new { Id = newTaste.Id }, newTaste);
         }
     }
 }

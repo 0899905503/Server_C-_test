@@ -33,9 +33,9 @@ public class FlavorsController : ControllerBase
             {
                 Flavor flavor = new Flavor
                 {
-                    id = reader.GetInt32("id"),
+                    Id = reader.GetInt32("id"),
                     flavor = reader.IsDBNull(reader.GetOrdinal("flavor")) ? null : reader.GetString("flavor"),
-                    price = reader.GetDouble("price")
+                    Price = reader.GetDouble("Price")
                 };
 
                 flavors.Add(flavor);
@@ -51,23 +51,23 @@ public class FlavorsController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public ActionResult<IEnumerable<Flavor>> GetFlavorsById(int id)
+    public ActionResult<IEnumerable<Flavor>> GetFlavorsById(int Id)
     {
         Flavor flavor = null;
         try
         {
             _conn.Open();
-            string query = "select *from flavor where id=@id";
+            string query = "select *from flavor whereId=@id";
             MySqlCommand cmd = new MySqlCommand(query, _conn);
-            cmd.Parameters.AddWithValue("@id", id);
+            cmd.Parameters.AddWithValue("@id", Id);
             MySqlDataReader reader = cmd.ExecuteReader();
             if (reader.Read())
             {
                 flavor = new Flavor
                 {
-                    id = reader.GetInt32("id"),
+                    Id = reader.GetInt32("id"),
                     flavor = reader.IsDBNull(reader.GetOrdinal("flavor")) ? null : reader.GetString("flavor"),
-                    price = reader.GetDouble("price")
+                    Price = reader.GetDouble("Price")
                 };
             }
             reader.Close();

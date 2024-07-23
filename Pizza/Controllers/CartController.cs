@@ -34,10 +34,10 @@ public class CartController : ControllerBase
             {
                 cmd.Parameters.AddWithValue("@Taste", cart.Taste);
                 cmd.Parameters.AddWithValue("@Flavor", cart.Flavor);
-                cmd.Parameters.AddWithValue("@price", cart.price);
-                cmd.Parameters.AddWithValue("@stats", cart.status);
+                cmd.Parameters.AddWithValue("@price", cart.Price);
+                cmd.Parameters.AddWithValue("@stats", cart.Status);
                 cmd.Parameters.AddWithValue("@status", "Waiting");
-                cmd.Parameters.AddWithValue("@userid", cart.userid);
+                cmd.Parameters.AddWithValue("@userid", cart.UserId);
                 cmd.ExecuteNonQuery();
             }
         }
@@ -73,8 +73,8 @@ public class CartController : ControllerBase
                             Id = reader.GetInt32("id"),
                             Taste = reader.IsDBNull(reader.GetOrdinal("Pizza")) ? null : reader.GetString("Pizza"),
                             Flavor = reader.IsDBNull(reader.GetOrdinal("Flavor")) ? null : reader.GetString("Flavor"),
-                            price = reader.GetDouble("price"),
-                            status = reader.IsDBNull(reader.GetOrdinal("status")) ? null : reader.GetString("status"),
+                            Price = reader.GetDouble("price"),
+                            Status = reader.IsDBNull(reader.GetOrdinal("status")) ? null : reader.GetString("status"),
                         };
 
                         carts.Add(cart);
@@ -115,8 +115,8 @@ public class CartController : ControllerBase
                             Id = reader.GetInt32("id"),
                             Taste = reader.IsDBNull(reader.GetOrdinal("Pizza")) ? null : reader.GetString("Pizza"),
                             Flavor = reader.IsDBNull(reader.GetOrdinal("Flavor")) ? null : reader.GetString("Flavor"),
-                            price = reader.GetDouble("price"),
-                            status = reader.IsDBNull(reader.GetOrdinal("status")) ? null : reader.GetString("status"),
+                            Price = reader.GetDouble("price"),
+                            Status = reader.IsDBNull(reader.GetOrdinal("status")) ? null : reader.GetString("status"),
                         };
 
                         cartItems.Add(cartItem);

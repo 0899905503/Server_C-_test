@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\C#_IMT\\pizza\\Pizza.csproj": {}
+    "D:\\C#_IMT\\Pizza\\Pizza.csproj": {}
   },
   "projects": {
-    "D:\\C#_IMT\\pizza\\Pizza.csproj": {
+    "D:\\C#_IMT\\Pizza\\Pizza.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\C#_IMT\\pizza\\Pizza.csproj",
+        "projectUniqueName": "D:\\C#_IMT\\Pizza\\Pizza.csproj",
         "projectName": "Pizza",
-        "projectPath": "D:\\C#_IMT\\pizza\\Pizza.csproj",
+        "projectPath": "D:\\C#_IMT\\Pizza\\Pizza.csproj",
         "packagesPath": "C:\\Users\\vongo\\.nuget\\packages\\",
-        "outputPath": "D:\\C#_IMT\\pizza\\obj\\",
+        "outputPath": "D:\\C#_IMT\\Pizza\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\vongo\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -44,23 +44,25 @@
               "target": "Package",
               "version": "[7.0.1, )"
             },
-            "Microsoft.AspNetCore.OpenApi": {
-              "target": "Package",
-              "version": "[7.0.13, )"
-            },
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",
-              "version": "[6.0.0, )"
+              "version": "[7.0.10, )"
+            },
+            "Microsoft.EntityFrameworkCore.Design": {
+              "target": "Package",
+              "version": "[7.0.10, )"
             },
             "Microsoft.EntityFrameworkCore.SqlServer": {
               "target": "Package",
-              "version": "[2.1.14, )"
+              "version": "[7.0.10, )"
             },
-            "Microsoft.EntityFrameworkCore.tools": {
-              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
-              "suppressParent": "All",
+            "Microsoft.Extensions.DependencyInjection": {
               "target": "Package",
-              "version": "[2.1.14, )"
+              "version": "[8.0.0, )"
+            },
+            "Microsoft.Extensions.Logging.Console": {
+              "target": "Package",
+              "version": "[8.0.0, )"
             },
             "MySqlConnector.DependencyInjection": {
               "target": "Package",
@@ -68,11 +70,15 @@
             },
             "Pomelo.EntityFrameworkCore.MySql": {
               "target": "Package",
-              "version": "[6.0.0, )"
+              "version": "[7.0.0, )"
             },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
               "version": "[6.5.0, )"
+            },
+            "System.Data.SqlClient": {
+              "target": "Package",
+              "version": "[4.8.6, )"
             },
             "System.IdentityModel.Tokens.Jwt": {
               "target": "Package",
