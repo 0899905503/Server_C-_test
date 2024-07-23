@@ -6,10 +6,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace Pizza.Migrations
+namespace Pizza.Models
 {
     [DbContext(typeof(PizzaDbContext))]
-    [Migration("20240723035159_Flavor")]
+    [Migration("20240723080919_Flavor")]
     partial class Flavor
     {
         /// <inheritdoc />

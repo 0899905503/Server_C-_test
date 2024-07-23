@@ -1,5 +1,7 @@
+using System.ComponentModel.DataAnnotations;
 using Microsoft.EntityFrameworkCore;
 using Pizza;
+
 
 public class PizzaContext : DbContext
 {
@@ -14,12 +16,13 @@ public class TokenResponse
 
 public class User
 {
+
+    [Key]
     public int Id { get; set; }
-    public string? Name { get; set; }
-    public string? Username { get; set; }
-    public string? Password { get; set; }
-    public string? Role { get; set; }
-    public string? Phone_Number { get; set; }
-    public string? Address { get; set; }
-    public ICollection<Cart> Carts { get; set; }
+    public string Name { get; set; }
+    public string Username { get; set; }
+    public string Password { get; set; }
+    public string Role { get; set; }
+    public string Phone_Number { get; set; }
+    public string Address { get; set; }
 }

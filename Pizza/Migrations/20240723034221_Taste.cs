@@ -8,6 +8,9 @@ namespace Pizza.Migrations
     /// <inheritdoc />
     public partial class Taste : Migration
     {
+
+
+
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {

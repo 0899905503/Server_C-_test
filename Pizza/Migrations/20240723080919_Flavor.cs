@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace Pizza.Migrations
+namespace Pizza.Models
 {
     /// <inheritdoc />
     public partial class Flavor : Migration
@@ -17,7 +17,7 @@ namespace Pizza.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Flavor = table.Column<string>(nullable: true),
+                    Taste = table.Column<string>(nullable: true),
                     Price = table.Column<float>(nullable: true)
                 },
                 constraints: table =>
@@ -26,14 +26,14 @@ namespace Pizza.Migrations
                 });
 
             // migrationBuilder.InsertData(
-            //     table: "Tastes",
+            //     table: "Flavors",
             //     columns: new[] { "Id", "Taste", "Price" },
             //     values: new object[,]
             //     {
-            //         { 1, "Spicy", 12f },
-            //         { 2, "Salty", 14f },
-            //         { 3, "Sweet", 16f },
-            //         { 4, "Sour", 18f }
+            //         { 1, "Tomato", 12f },
+            //         { 2, "Mango", 14f },
+            //         { 3, "Chilly", 16f },
+            //         { 4, "Popcorn", 18f }
             //     });
         }
 

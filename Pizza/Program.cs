@@ -1,10 +1,9 @@
-using System.Text;
-
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
+using Pizza.Models;
+
 using Microsoft.IdentityModel.Tokens;
-using MySqlConnector;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,16 +15,15 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<PizzaDbContext>(options =>
     options.UseMySql(builder.Configuration.GetConnectionString("WebApiDatabase"), new MySqlServerVersion(new Version(8, 0, 25))));
 
-
 // Add CORS policy
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAllOrigins",
         builder =>
         {
-            builder.AllowAnyOrigin() // Cho phép yêu cầu từ bất kỳ nguồn nào
-                   .AllowAnyMethod() // Cho phép các phương thức HTTP
-                   .AllowAnyHeader(); // Cho phép các header trong yêu cầu
+            builder.AllowAnyOrigin() // Allow requests from any origin
+                   .AllowAnyMethod() // Allow any HTTP method
+                   .AllowAnyHeader(); // Allow any headers
         });
 });
 
@@ -48,6 +46,14 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 var app = builder.Build();
 
+// Initialize database and seed data
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var dbContext = services.GetRequiredService<PizzaDbContext>();
+    DbInitializer.Initialize(dbContext);
+}
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -67,5 +73,3 @@ app.UseCors("AllowAllOrigins");
 app.MapControllers();
 
 app.Run();
-
-

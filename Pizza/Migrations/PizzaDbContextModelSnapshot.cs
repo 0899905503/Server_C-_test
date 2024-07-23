@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace Pizza.Migrations
+namespace Pizza.Models
 {
     [DbContext(typeof(PizzaDbContext))]
     partial class PizzaDbContextModelSnapshot : ModelSnapshot
