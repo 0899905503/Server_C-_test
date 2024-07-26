@@ -68,13 +68,13 @@
         function getQueryParams() {
             const params = new URLSearchParams(window.location.search);
             return {
-                userid: params.get('UserId'),
+                UserId: params.get('UserId'),
             };
         }
 
-        async function fetchusercartDetails(userid) {
+        async function fetchusercartDetails(UserId) {
             try {
-                const response = await fetch(`http://localhost:5014/api/Cart/${userid}`);
+                const response = await fetch(`http://localhost:5014/api/Cart/${UserId}`);
                 if (!response.ok) {
                     throw new Error('Network response was not ok ' + response.statusText);
                 }
@@ -109,7 +109,7 @@
 
         async function received(itemId) {
             try {
-                const response = await fetch(`http://localhost:5014/api/C/${itemId}/status`, {
+                const response = await fetch(`http://localhost:5014/api/cart/${itemId}/status`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json'
@@ -138,7 +138,7 @@
 
         // Get user ID from query parameters and fetch usercart details
         const params = getQueryParams();
-        fetchusercartDetails(params.userid);
+        fetchusercartDetails(params.UserId);
     </script>
 </body>
 

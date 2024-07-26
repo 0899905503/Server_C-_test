@@ -53,7 +53,7 @@ namespace MVC.Controllers
                     ViewBag.UserId = userId;
                 }
 
-                if (!string.IsNullOrEmpty(role) && role == "admin")
+                if (role == "admin")
                 {
                     return RedirectToAction("Admin", "Admin");
                 }
@@ -65,10 +65,11 @@ namespace MVC.Controllers
             }
             else
             {
-                // Handle case where token is not available
-                return RedirectToAction("Login", "Auth");
+                // Allow guest users to access the homepage
+                return View();
             }
         }
+
 
         public IActionResult Orderpage()
         {

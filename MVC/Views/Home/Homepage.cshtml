@@ -1,7 +1,9 @@
 @{
-	var token = ViewBag.token;
-	var UserId = ViewBag.UserId;
+	var token = ViewBag.Token;
+	var userId = ViewBag.UserId;
+	var guestUser = ViewBag.GuestUser;
 }
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -89,7 +91,20 @@
 </head>
 
 <body>
-	<button>Userid : @ViewBag.UserId </button>
+	@if (guestUser != null)
+	{
+		<div id="user-info">
+			<h2>Guest Information</h2>
+			<p>Name: @guestUser["Name"]</p>
+			<p>Address: @guestUser["Address"]</p>
+			<p>Phone Number: @guestUser["PhoneNumber"]</p>
+		</div>
+	}
+	else
+	{
+		<button>Userid : @ViewBag.UserId</button>
+	}
+
 	<div class="pizza-list">
 		<label class="pizza-item">
 			<input class="pizza-radio" type="radio" name="pizza" value="1">
@@ -141,20 +156,25 @@
 	<form id="order-form" action="Orderpage" method="get">
 		<input type="hidden" name="Taste" id="taste-input">
 		<input type="hidden" name="Flavor" id="flavor-input">
-		<input type="hidden" name="UserId" id="user-id-input" value="@UserId">
+		@if (guestUser != null)
+		{
+			<input type="hidden" name="UserId" id="user-id-input" value="guest">
+		}
+		else
+		{
+			<input type="hidden" name="UserId" id="user-id-input" value="@userId">
+		}
 		<button type="submit" class="buy-button">Mua hàng</button>
 	</form>
+
 	<a href="Usercart" class="buy-button">My Cart</a>
 	<script>
-
 		document.getElementById('order-form').addEventListener('submit', function (event) {
 			const selectedPizza = document.querySelector('input[name="pizza"]:checked');
 			const selectedFlavor = document.querySelector('input[name="flavor"]:checked');
-			const UserId = "@UserId";
 			if (selectedPizza && selectedFlavor) {
 				document.getElementById('taste-input').value = selectedPizza.value;
 				document.getElementById('flavor-input').value = selectedFlavor.value;
-				document.getElementById('user-id-input').value = UserId;
 			} else {
 				event.preventDefault();
 				alert('Vui lòng chọn cả loại pizza và hương vị.');

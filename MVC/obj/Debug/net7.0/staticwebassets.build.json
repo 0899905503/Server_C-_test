@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "UWfbTbJeNbRaz7Wm9jSBOcVnat2EsGMeflSAbqFdySg=",
+  "Hash": "NsFC5r7DmlYYQ6A50huGclGXt/DkjRO/FqX3e1SPVz8=",
   "Source": "MVC",
   "BasePath": "_content/MVC",
   "Mode": "Default",
@@ -83,6 +83,23 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\css\\create_style.css"
+    },
+    {
+      "Identity": "D:\\C#_IMT\\MVC\\wwwroot\\css\\guest_style.css",
+      "SourceId": "MVC",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\C#_IMT\\MVC\\wwwroot\\",
+      "BasePath": "_content/MVC",
+      "RelativePath": "css/guest_style.css",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\css\\guest_style.css"
     },
     {
       "Identity": "D:\\C#_IMT\\MVC\\wwwroot\\css\\login_style.css",

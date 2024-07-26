@@ -31,6 +31,10 @@ namespace MVC.Controllers
         {
             return View();
         }
+        public IActionResult GuestCart()
+        {
+            return View();
+        }
         public IActionResult Updatetaste()
         {
             return View();

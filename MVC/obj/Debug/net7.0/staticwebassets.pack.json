@@ -13,6 +13,10 @@
       "PackagePath": "staticwebassets\\css\\create_style.css"
     },
     {
+      "Id": "D:\\C#_IMT\\MVC\\wwwroot\\css\\guest_style.css",
+      "PackagePath": "staticwebassets\\css\\guest_style.css"
+    },
+    {
       "Id": "D:\\C#_IMT\\MVC\\wwwroot\\css\\login_style.css",
       "PackagePath": "staticwebassets\\css\\login_style.css"
     },

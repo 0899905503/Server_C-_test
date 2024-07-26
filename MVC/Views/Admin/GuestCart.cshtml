@@ -1,5 +1,5 @@
 @{
-    ViewBag.title = "Cart";
+    ViewBag.title = "Guest Cart";
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -7,7 +7,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cart Page</title>
+    <title>Guest Cart</title>
 
     <style>
         body {
@@ -58,15 +58,27 @@
 </head>
 
 <body>
-    <h1>Cart Details</h1>
+    <h1>Guest Cart Details</h1>
     <ul class="cart-list" id="cart-list">
         <!-- Cart items will be added dynamically here -->
     </ul>
 
     <script>
+        // Extract GuestId from the URL parameters
+        function getQueryParam(name) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
+        }
+
         async function fetchCartDetails() {
+            const guestId = getQueryParam('guestId');
+            if (!guestId) {
+                console.error('GuestId is missing in the URL.');
+                return;
+            }
+
             try {
-                const response = await fetch('http://localhost:5014/api/cart');
+                const response = await fetch(`http://localhost:5014/api/GuestCart/${guestId}`); // Use the GuestId in the URL
                 if (!response.ok) {
                     throw new Error('Network response was not ok ' + response.statusText);
                 }
@@ -84,11 +96,14 @@
 
                     listItem.innerHTML = `
                         <p><label>ID:</label> ${item.id}</p>
+                        <p><label>Name:</label> ${item.name}</p>
                         <p><label>Taste:</label> ${item.taste}</p>
                         <p><label>Flavor:</label> ${item.flavor}</p>
                         <p><label>Price:</label> $${item.price}</p>
+                        <p><label>Address:</label> ${item.address}</p>
+                        <p><label>Phone Number:</label> ${item.phone_Number}</p>
                         <p><label>Status:</label> ${item.status}</p>
-                        <button id="btn-${item.id}" onclick="confirmItem(${item.id})">Confirm</button>
+                        <button id="btn-${item.guestId}" onclick="confirmItem(${item.guestId})">Confirm</button>
                     `;
 
                     cartList.appendChild(listItem);
@@ -99,34 +114,7 @@
             }
         }
 
-        async function confirmItem(itemId) {
-            try {
-                const response = await fetch(`http://localhost:5014/api/cart/${itemId}/status`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify("delivering")
-                });
 
-                if (!response.ok) {
-                    throw new Error('Network response was not ok ' + response.statusText);
-                }
-
-                const result = await response.json();
-                alert(result.Message); // Hiển thị thông báo thành công
-
-                // Hide the button after confirmation
-                const btn = document.getElementById(`btn-${itemId}`);
-                if (btn) {
-                    btn.style.display = 'none';
-                }
-
-            } catch (error) {
-                console.error('There was a problem with the fetch operation:', error);
-                alert('An error occurred while confirming the cart item.');
-            }
-        }
 
         fetchCartDetails(); 
     </script>

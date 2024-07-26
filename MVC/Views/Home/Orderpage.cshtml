@@ -5,30 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Order Page</title>
-
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 20px;
-            padding: 20px;
-        }
-
-        .order-details {
-            border: 1px solid #ddd;
-            padding: 20px;
-            border-radius: 5px;
-            width: 400px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            text-align: center;
-        }
-
-        .order-details h2 {
-            margin-bottom: 20px;
-        }
+        /* Your styles here */
     </style>
 </head>
 
@@ -38,15 +16,59 @@
         <p id="order-taste"></p>
         <p id="order-flavor"></p>
         <p id="order-price"></p>
+        <div id="guest-info">
+            <p id="order-name"></p>
+            <p id="order-phone"></p>
+            <p id="order-address"></p>
+        </div>
     </div>
 
+    <div>
+        <h3>Guest ID</h3>
+        <p id="guest-id"></p>
+    </div>
+
+    <button type="button" onclick="saveGuestCart()">Mua hàng</button>
+
     <script>
+        function setCookie(name, value, days) {
+            const expires = new Date(Date.now() + days * 864e5).toUTCString();
+            document.cookie = `${name}=${encodeURIComponent(value)}; expires=${expires}; path=/`;
+        }
+
+        function getCookie(name) {
+            const nameEQ = name + "=";
+            const ca = document.cookie.split(';');
+            for (let i = 0; i < ca.length; i++) {
+                let c = ca[i].trim();
+                if (c.indexOf(nameEQ) === 0) return decodeURIComponent(c.substring(nameEQ.length));
+            }
+            return null;
+        }
+
+        function generateUUID() {
+            return 'xxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+                const r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+                return v.toString(16);
+            });
+        }
+
+        function initializeGuestId() {
+            let guestId = getCookie('guestId');
+            if (!guestId) {
+                guestId = generateUUID();
+                setCookie('guestId', guestId, 30);
+            }
+            document.getElementById('guest-id').innerText = `Guest ID: ${guestId}`;
+            console.log('Guest ID:', guestId);
+        }
+
         function getQueryParams() {
             const params = new URLSearchParams(window.location.search);
             return {
                 tasteId: params.get('Taste'),
                 flavor: params.get('Flavor'),
-                userid: params.get('UserId'),
+                userId: params.get('UserId')
             };
         }
 
@@ -74,17 +96,17 @@
             }
         }
 
-        const params = getQueryParams();
-        const tasteId = params.tasteId;
-        const flavor = params.flavor;
-
-        async function calculateTotalPrice() {
+        async function calculateTotalPrice(tasteId, flavor) {
             const taste = await fetchTasteById(tasteId);
             const flavorData = await fetchFlavorById(flavor);
             return taste && flavorData ? taste.price + flavorData.price : null;
         }
 
         async function updateOrderDetails() {
+            const params = getQueryParams();
+            const tasteId = params.tasteId;
+            const flavor = params.flavor;
+
             const taste = await fetchTasteById(tasteId);
             const flavorData = await fetchFlavorById(flavor);
 
@@ -101,17 +123,32 @@
                 document.getElementById('order-flavor').innerText = 'Flavor not found';
             }
 
-            const totalPrice = await calculateTotalPrice();
+            const totalPrice = await calculateTotalPrice(tasteId, flavor);
             document.getElementById('order-price').innerText = totalPrice !== null
                 ? `Total Price: $${totalPrice}`
                 : 'Unable to calculate total price';
+
+            const userId = params.userId;
+            if (!userId) {
+                document.getElementById('guest-info').style.display = 'block';
+                document.getElementById('order-name').innerText = `Name: ${getCookie('guestName') || 'N/A'}`;
+                document.getElementById('order-phone').innerText = `Phone: ${getCookie('guestPhone') || 'N/A'}`;
+                document.getElementById('order-address').innerText = `Address: ${getCookie('guestAddress') || 'N/A'}`;
+            } else {
+                document.getElementById('guest-info').style.display = 'none';
+            }
         }
 
-        async function saveToCart() {
+        async function saveGuestCart() {
             const params = getQueryParams();
             const tasteId = params.tasteId;
             const flavor = params.flavor;
-            const userid = params.userid;
+
+            const name = getCookie('guestName');
+            const phone = getCookie('guestPhone');
+            const address = getCookie('guestAddress');
+            const guestId = getCookie('guestId');
+
             const taste = await fetchTasteById(tasteId);
             const flavorData = await fetchFlavorById(flavor);
 
@@ -120,21 +157,24 @@
                 return;
             }
 
-            const cartData = {
-                taste: taste.taste,
-                flavor: flavorData.flavor,
-                price: taste.price + flavorData.price,
-                userid: userid,
-                status: "Waiting"
+            const guestCartData = {
+                Taste: taste.taste,
+                Flavor: flavorData.flavor,
+                Price: taste.price + flavorData.price,
+                Name: name,
+                Address: address,
+                Phone_Number: phone,
+                GuestId: guestId,
+                Status: "Waiting"
             };
 
             try {
-                const response = await fetch('http://localhost:5014/api/cart/save', {
+                const response = await fetch('http://localhost:5014/api/GuestCart/saveGuestCart', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify(cartData)
+                    body: JSON.stringify(guestCartData)
                 });
 
                 if (!response.ok) {
@@ -143,18 +183,18 @@
 
                 const result = await response.json();
                 alert(result.Message);
-                window.location.href = `Usercart?UserId=${userid}`;
+                window.location.href = '/Admin/GuestCart';
+
             } catch (error) {
-                console.error('Error saving to cart:', error);
-                alert('An error occurred while adding to the cart.');
+                console.error('Error saving guest cart:', error);
+                alert('An error occurred while adding to the guest cart.');
             }
         }
 
+
+        initializeGuestId();
         updateOrderDetails();
     </script>
-
-    <button type="button" onclick="saveToCart()">Mua hàng</button>
-
 </body>
 
 </html>
