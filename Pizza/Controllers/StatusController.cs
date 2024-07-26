@@ -29,7 +29,7 @@ public class StatusController : ControllerBase
 
         // Endpoint để cập nhật trạng thái đơn hàng
         [HttpPut("{orderId}/status")]
-        public IActionResult UpdateOrderStatus(int orderId, [FromBody] string status)
+        public IActionResult UpdateOrderStatus(int id, [FromBody] string status)
         {
             if (string.IsNullOrEmpty(status))
             {
@@ -39,10 +39,10 @@ public class StatusController : ControllerBase
             try
             {
                 _conn.Open();
-                string query = "UPDATE Orders SET Status = @Status WHERE OrderId = @OrderId";
+                string query = "UPDATE carts SET Status = @Status WHERE id = @id";
                 MySqlCommand cmd = new MySqlCommand(query, _conn);
                 cmd.Parameters.AddWithValue("@Status", status);
-                cmd.Parameters.AddWithValue("@OrderId", orderId);
+                cmd.Parameters.AddWithValue("@id", id);
                 int rowsAffected = cmd.ExecuteNonQuery();
 
                 if (rowsAffected == 0)

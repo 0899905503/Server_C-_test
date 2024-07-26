@@ -40,7 +40,7 @@ namespace Pizza.Models
             try
             {
                 await _conn.OpenAsync();
-                string query = "SELECT * FROM user WHERE username=@username AND password=@password";
+                string query = "SELECT * FROM users WHERE username=@username AND password=@password";
                 MySqlCommand cmd = new MySqlCommand(query, _conn);
                 cmd.Parameters.AddWithValue("@username", username);
                 cmd.Parameters.AddWithValue("@password", password);
@@ -89,6 +89,40 @@ namespace Pizza.Models
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
+        }
+
+        [HttpGet("{Id}")]
+        public ActionResult<IEnumerable<Taste>> GetTasteById(int Id)
+        {
+            User user = null;
+            try
+            {
+                _conn.Open();
+                string query = "Select*from users where Id=@Id";
+                MySqlCommand cmd = new MySqlCommand(query, _conn);
+                cmd.Parameters.AddWithValue("@Id", Id);
+                MySqlDataReader reader = cmd.ExecuteReader();
+                if (reader.Read())
+                {
+                    user = new User
+                    {
+                        Id = reader.GetInt32("Id"),
+                        Name = reader.IsDBNull(reader.GetOrdinal("Name")) ? null : reader.GetString("Name"),
+                        Role = reader.IsDBNull(reader.GetOrdinal("Role")) ? null : reader.GetString("Role"),
+                        Phone_Number = reader.IsDBNull(reader.GetOrdinal("Phone_Number")) ? null : reader.GetString("Phone_Number"),
+                        Address = reader.IsDBNull(reader.GetOrdinal("Address")) ? null : reader.GetString("Address"),
+                    };
+                }
+                reader.Close();
+            }
+            finally { _conn.Close(); }
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(user);
+
         }
         [HttpDelete]
         public async Task<IActionResult> Delete(int id)

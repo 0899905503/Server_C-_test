@@ -14,6 +14,7 @@ public class PizzaDbContext : DbContext
     public DbSet<Cart> Carts { get; set; }
     public DbSet<Taste> Tastes { get; set; }
     public DbSet<Flavor> Flavors { get; set; }
+    public DbSet<GuestCart> GuestCarts { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

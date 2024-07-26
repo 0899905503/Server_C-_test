@@ -17,7 +17,7 @@ namespace Pizza.Models
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Taste = table.Column<string>(nullable: true),
+                    Flavor = table.Column<string>(nullable: true),
                     Price = table.Column<float>(nullable: true)
                 },
                 constraints: table =>

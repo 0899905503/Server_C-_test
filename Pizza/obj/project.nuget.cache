@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "jVHnjlXOzCI5HJx0I39DuJTF3OLAEZqPrH7wLdHAqyCQviruwxdYjj594br2cHPe4RmPFDX3bItGfS5UAymCig==",
+  "dgSpecHash": "ZvAFDFuRpYIpGNRmDkM9kN66Jsmw5/OROrS4mOhEnGm7WyExV+ZlqCGnpK4+Ib7y9vuTeOK/0tkgUZeWk0kC2A==",
   "success": true,
-  "projectFilePath": "D:\\C#_IMT\\pizza\\Pizza.csproj",
+  "projectFilePath": "D:\\C#_IMT\\Pizza\\Pizza.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\vongo\\.nuget\\packages\\azure.core\\1.24.0\\azure.core.1.24.0.nupkg.sha512",
     "C:\\Users\\vongo\\.nuget\\packages\\azure.identity\\1.6.0\\azure.identity.1.6.0.nupkg.sha512",

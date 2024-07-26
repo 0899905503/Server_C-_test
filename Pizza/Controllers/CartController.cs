@@ -29,15 +29,15 @@ public class CartController : ControllerBase
         try
         {
             _conn.Open();
-            string query = "INSERT INTO Cart (Pizza, Flavor, price,status,userid) VALUES (@Taste, @Flavor, @price,@status,@userid)";
+            string query = "INSERT INTO carts (Taste, Flavor, Price,Status,UserId) VALUES (@Taste, @Flavor, @Price,@Status,@UserId)";
             using (MySqlCommand cmd = new MySqlCommand(query, _conn))
             {
                 cmd.Parameters.AddWithValue("@Taste", cart.Taste);
                 cmd.Parameters.AddWithValue("@Flavor", cart.Flavor);
-                cmd.Parameters.AddWithValue("@price", cart.Price);
+                cmd.Parameters.AddWithValue("@Price", cart.Price);
                 cmd.Parameters.AddWithValue("@stats", cart.Status);
-                cmd.Parameters.AddWithValue("@status", "Waiting");
-                cmd.Parameters.AddWithValue("@userid", cart.UserId);
+                cmd.Parameters.AddWithValue("@Status", "Waiting");
+                cmd.Parameters.AddWithValue("@UserId", cart.UserId);
                 cmd.ExecuteNonQuery();
             }
         }
@@ -61,7 +61,7 @@ public class CartController : ControllerBase
         try
         {
             _conn.Open();
-            string query = "SELECT * FROM Cart";
+            string query = "SELECT * FROM carts";
             using (MySqlCommand cmd = new MySqlCommand(query, _conn))
             {
                 using (MySqlDataReader reader = cmd.ExecuteReader())
@@ -71,7 +71,7 @@ public class CartController : ControllerBase
                         Cart cart = new Cart
                         {
                             Id = reader.GetInt32("id"),
-                            Taste = reader.IsDBNull(reader.GetOrdinal("Pizza")) ? null : reader.GetString("Pizza"),
+                            Taste = reader.IsDBNull(reader.GetOrdinal("Taste")) ? null : reader.GetString("Taste"),
                             Flavor = reader.IsDBNull(reader.GetOrdinal("Flavor")) ? null : reader.GetString("Flavor"),
                             Price = reader.GetDouble("price"),
                             Status = reader.IsDBNull(reader.GetOrdinal("status")) ? null : reader.GetString("status"),
@@ -101,7 +101,7 @@ public class CartController : ControllerBase
         try
         {
             _conn.Open();
-            string query = "SELECT * FROM cart WHERE userid = @userid";
+            string query = "SELECT * FROM carts WHERE userid = @userid";
             using (var cmd = new MySqlCommand(query, _conn))
             {
                 cmd.Parameters.AddWithValue("@userid", userid);
@@ -112,11 +112,11 @@ public class CartController : ControllerBase
                     {
                         var cartItem = new Cart
                         {
-                            Id = reader.GetInt32("id"),
-                            Taste = reader.IsDBNull(reader.GetOrdinal("Pizza")) ? null : reader.GetString("Pizza"),
+                            Id = reader.GetInt32("Id"),
+                            Taste = reader.IsDBNull(reader.GetOrdinal("Taste")) ? null : reader.GetString("Taste"),
                             Flavor = reader.IsDBNull(reader.GetOrdinal("Flavor")) ? null : reader.GetString("Flavor"),
-                            Price = reader.GetDouble("price"),
-                            Status = reader.IsDBNull(reader.GetOrdinal("status")) ? null : reader.GetString("status"),
+                            Price = reader.GetDouble("Price"),
+                            Status = reader.IsDBNull(reader.GetOrdinal("Status")) ? null : reader.GetString("Status"),
                         };
 
                         cartItems.Add(cartItem);
@@ -151,7 +151,7 @@ public class CartController : ControllerBase
                 await _conn.OpenAsync();
 
 
-            string query = "delete from cart";
+            string query = "delete from carts";
             MySqlCommand cmd = new MySqlCommand(query, _conn);
 
             int result = await cmd.ExecuteNonQueryAsync();
@@ -177,7 +177,7 @@ public class CartController : ControllerBase
         try
         {
             _conn.Open();
-            string query = "delete from cart where id=@id";
+            string query = "delete from carts where id=@id";
             MySqlCommand cmd = new MySqlCommand(query, _conn);
             cmd.Parameters.AddWithValue("@id", id);
 
@@ -208,10 +208,10 @@ public class CartController : ControllerBase
         try
         {
             _conn.Open();
-            string query = "UPDATE Cart SET Status = @Status WHERE id = @id";
+            string query = "UPDATE carts SET Status = @Status WHERE id = @Id";
             MySqlCommand cmd = new MySqlCommand(query, _conn);
             cmd.Parameters.AddWithValue("@Status", status);
-            cmd.Parameters.AddWithValue("@id", id);
+            cmd.Parameters.AddWithValue("@Id", id);
             int rowsAffected = cmd.ExecuteNonQuery();
 
             if (rowsAffected == 0)
@@ -219,7 +219,7 @@ public class CartController : ControllerBase
                 return NotFound();
             }
 
-            return Ok(new { Message = "Order status updated successfully." });
+            return Ok(new { Message = "Cart status updated successfully." });
         }
         catch (Exception ex)
         {

@@ -30,7 +30,7 @@ namespace YourNamespace.Controllers
             {
                 _conn.Open();
 
-                string query = "SELECT * FROM Type";
+                string query = "SELECT * FROM taste";
                 MySqlCommand cmd = new MySqlCommand(query, _conn);
                 MySqlDataReader reader = cmd.ExecuteReader();
 
@@ -62,7 +62,7 @@ namespace YourNamespace.Controllers
             try
             {
                 _conn.Open();
-                string query = "Select*from Type where Id=@Id";
+                string query = "Select*from taste where Id=@Id";
                 MySqlCommand cmd = new MySqlCommand(query, _conn);
                 cmd.Parameters.AddWithValue("@Id", Id);
                 MySqlDataReader reader = cmd.ExecuteReader();
@@ -97,7 +97,7 @@ namespace YourNamespace.Controllers
             try
             {
                 _conn.Open();
-                string query = "UPDATE Type SET Price = @Price WHERE Id = @Id";
+                string query = "UPDATE taste SET Price = @Price WHERE Id = @Id";
                 MySqlCommand cmd = new MySqlCommand(query, _conn);
                 cmd.Parameters.AddWithValue("@Price", updatedTaste.Price);
                 cmd.Parameters.AddWithValue("@Id", Id);
@@ -126,7 +126,7 @@ namespace YourNamespace.Controllers
             try
             {
                 _conn.Open();
-                string query = "INSERT INTO Type (taste, Price) VALUES (@taste, @Price)";
+                string query = "INSERT INTO taste (taste, Price) VALUES (@taste, @Price)";
                 MySqlCommand cmd = new MySqlCommand(query, _conn);
                 cmd.Parameters.AddWithValue("@taste", newTaste.taste);
                 cmd.Parameters.AddWithValue("@Price", newTaste.Price);

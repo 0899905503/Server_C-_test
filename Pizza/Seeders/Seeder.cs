@@ -25,7 +25,7 @@ internal class DbInitializer
         var tastes = new Taste[]
         {
 
-                                  new Taste { Id = 1, taste = "Tomato", Price = 12 },
+                    new Taste { Id = 1, taste = "Tomato", Price = 12 },
                    new Taste { Id = 2, taste = "Mango", Price = 14 },
                    new Taste { Id = 3, taste = "Chilly", Price = 16 },
                    new Taste { Id = 4, taste = "Popcorn", Price = 18 }
