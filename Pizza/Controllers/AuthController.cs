@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Authorization;
+using Google.Apis.Auth;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using MySqlConnector;
@@ -8,6 +8,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+
 namespace Pizza.Models
 {
     [Route("api/[controller]")]
@@ -34,6 +35,35 @@ namespace Pizza.Models
             return Ok(new { Token = token, User = user });
         }
 
+        [HttpPost("google-signin")]
+        public async Task<IActionResult> GoogleSignIn([FromBody] TokenRequest tokenRequest)
+        {
+            try
+            {
+                var payload = await GoogleJsonWebSignature.ValidateAsync(tokenRequest.IdToken);
+                var user = await GetUserByEmailAsync(payload.Email);
+
+                if (user == null)
+                {
+                    user = new User
+                    {
+                        Username = payload.Email,
+                        Name = payload.Email,
+                        Role = "customer",
+                    };
+
+                    await CreateUserAsync(user);
+                }
+
+                var token = GenerateJwtToken(user);
+                return Ok(new { Token = token, User = user });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Message = "Google Sign-In failed", Error = ex.Message });
+            }
+        }
+
         private async Task<User> AuthenticateUserAsync(string username, string password)
         {
             User user = null;
@@ -54,10 +84,8 @@ namespace Pizza.Models
                             Name = reader.IsDBNull(reader.GetOrdinal("Name")) ? null : reader.GetString("Name"),
                             Username = reader.GetString("username"),
                             Role = reader.IsDBNull(reader.GetOrdinal("role")) ? null : reader.GetString("role"),
-
                             Phone_Number = reader.IsDBNull(reader.GetOrdinal("phone_number")) ? null : reader.GetString("phone_number"),
                             Address = reader.IsDBNull(reader.GetOrdinal("address")) ? null : reader.GetString("address"),
-
                         };
                     }
                 }
@@ -70,6 +98,58 @@ namespace Pizza.Models
             return user;
         }
 
+        private async Task<User> GetUserByEmailAsync(string email)
+        {
+            User user = null;
+            try
+            {
+                await _conn.OpenAsync();
+                string query = "SELECT * FROM users WHERE username=@username";
+                MySqlCommand cmd = new MySqlCommand(query, _conn);
+                cmd.Parameters.AddWithValue("@username", email);
+                using (var reader = await cmd.ExecuteReaderAsync())
+                {
+                    if (await reader.ReadAsync())
+                    {
+                        user = new User
+                        {
+                            Id = reader.GetInt32("id"),
+                            Name = reader.IsDBNull(reader.GetOrdinal("Name")) ? null : reader.GetString("Name"),
+                            Username = reader.GetString("username"),
+                            Role = reader.IsDBNull(reader.GetOrdinal("role")) ? null : reader.GetString("role"),
+                            Phone_Number = reader.IsDBNull(reader.GetOrdinal("phone_number")) ? null : reader.GetString("phone_number"),
+                            Address = reader.IsDBNull(reader.GetOrdinal("address")) ? null : reader.GetString("address"),
+                        };
+                    }
+                }
+            }
+            finally
+            {
+                await _conn.CloseAsync();
+            }
+
+            return user;
+        }
+
+        private async Task CreateUserAsync(User user)
+        {
+            try
+            {
+                await _conn.OpenAsync();
+                string query = "INSERT INTO users (username, name, role) VALUES (@username, @name, @role)";
+                MySqlCommand cmd = new MySqlCommand(query, _conn);
+                cmd.Parameters.AddWithValue("@username", user.Username);
+                cmd.Parameters.AddWithValue("@name", user.Name);
+                cmd.Parameters.AddWithValue("@role", user.Role);
+                await cmd.ExecuteNonQueryAsync();
+                user.Id = (int)cmd.LastInsertedId;
+            }
+            finally
+            {
+                await _conn.CloseAsync();
+            }
+        }
+
         private string GenerateJwtToken(User user)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
@@ -78,11 +158,10 @@ namespace Pizza.Models
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
-
-                new Claim(ClaimTypes.Name, user.Name ?? string.Empty)  ,
-                new Claim(ClaimTypes.Name, user.Username ?? string.Empty),
-                new Claim(ClaimTypes.Name, user.Password ?? string.Empty),
-                          new Claim(ClaimTypes.NameIdentifier, user.Id.ToString() ?? string.Empty)
+                    new Claim(ClaimTypes.Name, user.Name ?? string.Empty),
+                    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString() ?? string.Empty),
+                    new Claim(ClaimTypes.Email, user.Username ?? string.Empty),
+                    new Claim(ClaimTypes.Role, user.Role ?? string.Empty)
                 }),
                 Expires = DateTime.UtcNow.AddHours(1),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
@@ -98,7 +177,7 @@ namespace Pizza.Models
             try
             {
                 _conn.Open();
-                string query = "Select*from users where Id=@Id";
+                string query = "Select * from users where Id=@Id";
                 MySqlCommand cmd = new MySqlCommand(query, _conn);
                 cmd.Parameters.AddWithValue("@Id", Id);
                 MySqlDataReader reader = cmd.ExecuteReader();
@@ -115,30 +194,32 @@ namespace Pizza.Models
                 }
                 reader.Close();
             }
-            finally { _conn.Close(); }
+            finally
+            {
+                _conn.Close();
+            }
             if (user == null)
             {
                 return NotFound();
             }
 
             return Ok(user);
-
         }
+
         [HttpDelete]
         public async Task<IActionResult> Delete(int id)
         {
-
             try
             {
                 _conn.Open();
-                string query = "delete from user where id=@id";
+                string query = "DELETE FROM users WHERE id=@id";
                 MySqlCommand cmd = new MySqlCommand(query, _conn);
                 cmd.Parameters.AddWithValue("@id", id);
 
                 int result = await cmd.ExecuteNonQueryAsync();
                 if (result == 0)
                 {
-                    return NotFound(new { message = "Not found User Id" });
+                    return NotFound(new { message = "User not found" });
                 }
             }
             finally
@@ -155,4 +236,8 @@ namespace Pizza.Models
         public string? Password { get; set; }
     }
 
+    public class TokenRequest
+    {
+        public string IdToken { get; set; }
+    }
 }
