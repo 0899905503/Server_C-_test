@@ -35,24 +35,13 @@
             <div class="g_id_signin" data-type="standard"></div>
         </div>
     </div>
-    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
     <script>
-        const client_id = '440230422956-k3qiiju5c4u8clc7p8l6d4cout65o6mt.apps.googleusercontent.com';
+        const client_id = "440230422956-k3qiiju5c4u8clc7p8l6d4cout65o6mt.apps.googleusercontent.com";
 
-        function show() {
-            var password = document.getElementById("password");
-            var icon = document.querySelector(".fas");
-
-            // ========== Checking type of password ===========
-            if (password.type === "password") {
-                password.type = "text";
-            } else {
-                password.type = "password";
-            }
-        }
-
-        function onSignIn(googleUser) {
-            var id_token = googleUser.getAuthResponse().id_token;
+        function onSignIn(response) {
+            console.log('Google Sign-In response:', response); // Log response for debugging
+            var id_token = response.credential;
             fetch('http://localhost:5014/api/Auth/google-signin', {
                 method: 'POST',
                 headers: {
@@ -62,11 +51,11 @@
             })
                 .then(response => response.json())
                 .then(data => {
+                    console.log('Server response:', data); // Log server response for debugging
                     if (data.token) {
-                        // Store the token in localStorage or cookie
                         localStorage.setItem('token', data.token);
-                        // Display success message and redirect after a delay
-                        displayMessage('Google Sign-In successful', '/Home/Homepage');
+                        alert('Google Sign-In successful');
+                        window.location.href = '/Home/Homepage';
                     } else {
                         alert('Google Sign-In failed');
                     }
@@ -77,30 +66,22 @@
                 });
         }
 
-        function initGoogleSignIn() {
-            gapi.load('auth2', function () {
-                var auth2 = gapi.auth2.init({
-                    client_id: client_id,
-                    cookiepolicy: 'single_host_origin',
-                });
-                document.getElementById('googleSignInBtn').addEventListener('click', function () {
-                    auth2.signIn().then(onSignIn);
-                });
+        window.onload = function () {
+            google.accounts.id.initialize({
+                client_id: client_id,
+                callback: onSignIn
             });
-        }
 
-        function displayMessage(message, redirectUrl) {
-            alert(message);
-            // Redirect after 1.5 seconds (1500 milliseconds)
-            setTimeout(function () {
-                window.location.href = redirectUrl;
-            }, 1500);
-        }
+            google.accounts.id.renderButton(
+                document.getElementById('googleSignInBtn'),
+                { theme: 'outline', size: 'large' } // Customize the button style
+            );
 
-        document.addEventListener('DOMContentLoaded', function () {
-            initGoogleSignIn();
-        });
+            google.accounts.id.prompt(); // Optional: prompt the user if needed
+        }
     </script>
+
+
 </body>
 
 </html>

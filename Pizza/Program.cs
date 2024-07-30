@@ -60,7 +60,21 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
+app.Use(async (context, next) =>
+  {
+      context.Response.Headers.Add("Cross-Origin-Opener-Policy", "same-origin");
+      await next();
+  });
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAllOrigins",
+        builder =>
+        {
+            builder.AllowAnyOrigin()
+                   .AllowAnyMethod()
+                   .AllowAnyHeader();
+        });
+});
 app.UseHttpsRedirection();
 
 app.UseRouting();
