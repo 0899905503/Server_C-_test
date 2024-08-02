@@ -44,6 +44,10 @@
               "target": "Package",
               "version": "[1.68.0, )"
             },
+            "Microsoft.AspNetCore.Authentication.AzureAD.UI": {
+              "target": "Package",
+              "version": "[6.0.32, )"
+            },
             "Microsoft.AspNetCore.Authentication.JwtBearer": {
               "target": "Package",
               "version": "[7.0.1, )"
@@ -68,6 +72,22 @@
               "target": "Package",
               "version": "[8.0.0, )"
             },
+            "Microsoft.Graph": {
+              "target": "Package",
+              "version": "[1.0.0, )"
+            },
+            "Microsoft.Identity.Client": {
+              "target": "Package",
+              "version": "[4.61.3, )"
+            },
+            "Microsoft.Identity.Web": {
+              "target": "Package",
+              "version": "[3.0.1, )"
+            },
+            "Microsoft.Identity.Web.UI": {
+              "target": "Package",
+              "version": "[3.0.1, )"
+            },
             "MySqlConnector.DependencyInjection": {
               "target": "Package",
               "version": "[2.3.6, )"
@@ -86,7 +106,7 @@
             },
             "System.IdentityModel.Tokens.Jwt": {
               "target": "Package",
-              "version": "[7.6.3, )"
+              "version": "[8.0.1, )"
             }
           },
           "imports": [

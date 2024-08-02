@@ -1,4 +1,3 @@
-using Google.Apis.Auth;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using MySqlConnector;
@@ -8,6 +7,11 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Graph;
+using Microsoft.Identity.Client;
+using Google.Apis.Auth;
+using Newtonsoft.Json;
 
 namespace Pizza.Models
 {
@@ -16,9 +20,18 @@ namespace Pizza.Models
     public class AuthController : ControllerBase
     {
         private readonly MySqlConnection _conn;
+        private readonly IConfiguration _configuration;
+        private readonly string _clientId;
+        private readonly string _tenantId;
+        private readonly string _clientSecret;
 
-        public AuthController()
+        public AuthController(IConfiguration configuration)
         {
+            _configuration = configuration;
+            _clientId = _configuration["AzureAd:ClientId"];
+            _tenantId = _configuration["AzureAd:TenantId"];
+            _clientSecret = _configuration["AzureAd:ClientSecret"];
+
             string connectionString = "server=localhost; database=pizza; user=root; password=123456789";
             _conn = new MySqlConnection(connectionString);
         }
@@ -62,6 +75,34 @@ namespace Pizza.Models
             {
                 return BadRequest(new { Message = "Google Sign-In failed", Error = ex.Message });
             }
+        }
+
+        [HttpPost("microsoft-signin")]
+        public async Task<IActionResult> MicrosoftSignIn([FromBody] MicrosoftSignInRequest request)
+        {
+            var clientId = _configuration["AzureAd:ClientId"];
+            var clientSecret = _configuration["AzureAd:ClientSecret"];
+            var tenantId = _configuration["AzureAd:TenantId"];
+            var authority = $"https://login.microsoftonline.com/{tenantId}/oauth2/v2.0/token";
+
+            var client = new HttpClient();
+            var tokenRequest = new HttpRequestMessage(HttpMethod.Post, authority);
+            tokenRequest.Content = new FormUrlEncodedContent(new[]
+            {
+            new KeyValuePair<string, string>("client_id", clientId),
+            new KeyValuePair<string, string>("scope", "https://graph.microsoft.com/.default"),
+            new KeyValuePair<string, string>("client_secret", clientSecret),
+            new KeyValuePair<string, string>("grant_type", "client_credentials")
+        });
+
+            var tokenResponse = await client.SendAsync(tokenRequest);
+            tokenResponse.EnsureSuccessStatusCode();
+            var tokenResponseContent = await tokenResponse.Content.ReadAsStringAsync();
+            var tokenData = JsonConvert.DeserializeObject<TokenResponse>(tokenResponseContent);
+
+            // Validate ID token and create your session or JWT token here
+            // For demonstration purposes, returning the received token directly
+            return Ok(new { token = tokenData.AccessToken });
         }
 
         private async Task<User> AuthenticateUserAsync(string username, string password)
@@ -170,6 +211,21 @@ namespace Pizza.Models
             return tokenHandler.WriteToken(token);
         }
 
+        private async Task<UserInfo> GetUserInfoAsync(IConfidentialClientApplication clientApp, string accessToken)
+        {
+            var graphClient = new GraphServiceClient(new DelegateAuthenticationProvider(async (requestMessage) =>
+            {
+                requestMessage.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", accessToken);
+            }));
+
+            var me = await graphClient.Me.Request().GetAsync();
+            return new UserInfo
+            {
+                Email = me.UserPrincipalName,
+                Name = me.DisplayName
+            };
+        }
+
         [HttpGet("{Id}")]
         public ActionResult<IEnumerable<Taste>> GetTasteById(int Id)
         {
@@ -239,5 +295,21 @@ namespace Pizza.Models
     public class TokenRequest
     {
         public string IdToken { get; set; }
+    }
+
+    public class UserInfo
+    {
+        public string Email { get; set; }
+        public string Name { get; set; }
+    }
+    public class MicrosoftSignInRequest
+    {
+        public string IdToken { get; set; }
+    }
+
+    public class TokenResponse
+    {
+        [JsonProperty("access_token")]
+        public string AccessToken { get; set; }
     }
 }

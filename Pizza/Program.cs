@@ -1,9 +1,9 @@
-using Microsoft.EntityFrameworkCore;
-using Pizza.Models;
-
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Web;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,16 +18,15 @@ builder.Services.AddDbContext<PizzaDbContext>(options =>
 // Add CORS policy
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAllOrigins",
+    options.AddPolicy("AllowSpecificOrigin",
         builder =>
         {
-            builder.AllowAnyOrigin() // Allow requests from any origin
-                   .AllowAnyMethod() // Allow any HTTP method
-                   .AllowAnyHeader(); // Allow any headers
+            builder.WithOrigins("http://localhost:5101")
+                   .AllowAnyMethod()
+                   .AllowAnyHeader();
         });
 });
 
-// Configuration for JWT authentication
 var jwtSettings = builder.Configuration.GetSection("Jwt");
 var key = Encoding.ASCII.GetBytes(jwtSettings["Key"]);
 
@@ -43,6 +42,11 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateLifetime = true
         };
     });
+
+builder.Services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
+    .AddMicrosoftIdentityWebApp(builder.Configuration, "AzureAd")
+    .EnableTokenAcquisitionToCallDownstreamApi()
+    .AddInMemoryTokenCaches();
 
 var app = builder.Build();
 
@@ -60,21 +64,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-app.Use(async (context, next) =>
-  {
-      context.Response.Headers.Add("Cross-Origin-Opener-Policy", "same-origin");
-      await next();
-  });
 
+app.UseCors("AllowSpecificOrigin");
 app.UseHttpsRedirection();
-
 app.UseRouting();
-
 app.UseAuthentication();
 app.UseAuthorization();
-
-app.UseCors("AllowAllOrigins");
-
 app.MapControllers();
 
 app.Run();

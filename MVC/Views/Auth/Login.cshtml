@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.1/css/all.css"
         integrity="sha384-vp86vTRFVJgpjF9jiIGPEEqYqlDwgyBgEF109VFjmqGmIY/Y4HV4d3Gp2irVfcrp" crossorigin="anonymous">
     <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script src="https://alcdn.msauth.net/browser/2.13.0/js/msal-browser.min.js"></script>
 </head>
 
 <body class="body">
@@ -29,29 +30,28 @@
                 <button type="button" onclick="window.location.href='@Url.Action("GuestInfo", "Auth")'">Guest</button>
                 <p class="message"></p>
             </form>
-            <!-- Thêm nút đăng nhập bằng Google -->
             <button id="googleSignInBtn" class="button button-block google"><i class="fab fa-google"></i> Sign In with
                 Google</button>
+            <button id="microsoftSignInBtn" class="button button-block microsoft"><i class="fab fa-microsoft"></i> Sign
+                In with Microsoft</button>
             <div class="g_id_signin" data-type="standard"></div>
         </div>
     </div>
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
     <script>
-        const client_id = "440230422956-k3qiiju5c4u8clc7p8l6d4cout65o6mt.apps.googleusercontent.com";
+        const googleClientId = "440230422956-k3qiiju5c4u8clc7p8l6d4cout65o6mt.apps.googleusercontent.com";
+        const msClientId = "fc44908d-ee05-492a-b6e3-c950b10b3002";
+        const msRedirectUri = "http://localhost:5101";
 
         function onSignIn(response) {
-            console.log('Google Sign-In response:', response); // Log response for debugging
+            console.log('Google Sign-In response:', response);
             var id_token = response.credential;
             fetch('http://localhost:5014/api/Auth/google-signin', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ IdToken: id_token })
             })
                 .then(response => response.json())
                 .then(data => {
-                    console.log('Server response:', data); // Log server response for debugging
                     if (data.token) {
                         localStorage.setItem('token', data.token);
                         alert('Google Sign-In successful');
@@ -68,20 +68,66 @@
 
         window.onload = function () {
             google.accounts.id.initialize({
-                client_id: client_id,
+                client_id: googleClientId,
                 callback: onSignIn
             });
 
             google.accounts.id.renderButton(
                 document.getElementById('googleSignInBtn'),
-                { theme: 'outline', size: 'large' } // Customize the button style
+                { theme: 'outline', size: 'large' }
             );
 
-            google.accounts.id.prompt(); // Optional: prompt the user if needed
+            google.accounts.id.prompt();
         }
+
+        const msalConfig = {
+            auth: {
+                clientId: msClientId,
+                authority: `https://login.microsoftonline.com/27a9e071-d275-4e4f-a7b5-c8ffd1950bbc`,
+                redirectUri: msRedirectUri,
+            },
+            cache: {
+                cacheLocation: "localStorage",
+                storeAuthStateInCookie: false
+            }
+        };
+
+        const msalInstance = new msal.PublicClientApplication(msalConfig);
+
+        document.getElementById('microsoftSignInBtn').addEventListener('click', () => {
+            msalInstance.loginPopup({
+                scopes: ["user.read"]
+            }).then(response => {
+                console.log('Microsoft Sign-In response:', response);
+                var id_token = response.idToken;
+                fetch('http://localhost:5014/api/Auth/microsoft-signin', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ IdToken: id_token })
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.token) {
+                            localStorage.setItem('token', data.token);
+                            alert('Microsoft Sign-In successful');
+                            window.location.href = '/Home/Homepage';
+                        } else {
+                            alert('Microsoft Sign-In failed');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Microsoft Sign-In failed');
+                    });
+            }).catch(error => {
+                console.error('Error during Microsoft Sign-In:', error);
+                alert('Microsoft Sign-In failed');
+            });
+        });
+
+
+
     </script>
-
-
 </body>
 
 </html>

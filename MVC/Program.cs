@@ -1,11 +1,16 @@
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.Identity.Web;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
+    .AddMicrosoftIdentityWebApp(builder.Configuration, "AzureAd")
+    .EnableTokenAcquisitionToCallDownstreamApi()
+    .AddInMemoryTokenCaches(); ;
+
 builder.Services.AddControllersWithViews();
 
-// Add HttpClient service
-builder.Services.AddHttpClient();
-builder.Services.AddSession();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -17,14 +22,13 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
 app.UseRouting();
+app.UseAuthentication();
 app.UseAuthorization();
 
-// Map controllers
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Auth}/{action=Login}");
 
-app.UseSession();
+
 app.Run();
