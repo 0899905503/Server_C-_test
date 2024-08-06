@@ -25,7 +25,10 @@ jobs:
         run: dotnet publish -c Release -o ${{ github.workspace }}/publish
 
       - name: Verify publish directory
-        run: dir ${{ github.workspace }}/publish
+        run: |
+          echo "Contents of publish directory:"
+          dir ${{ github.workspace }}/publish
+        shell: powershell
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
@@ -49,10 +52,16 @@ jobs:
           name: .net-app
 
       - name: Verify downloaded artifact
-        run: dir ${{ github.workspace }}/.net-app
+        run: |
+          echo "Contents of downloaded artifact:"
+          dir ${{ github.workspace }}/.net-app
+        shell: powershell
 
       - name: List files in artifact directory
-        run: dir ${{ github.workspace }}/.net-app
+        run: |
+          echo "Listing files in artifact directory:"
+          dir ${{ github.workspace }}/.net-app
+        shell: powershell
 
       - name: Login to Azure
         uses: azure/login@v2
@@ -67,4 +76,4 @@ jobs:
         with:
           app-name: 'pizzawebapp1'
           slot-name: 'Production'
-          package: ${{ github.workspace }}/publish
+          package: ${{ github.workspace }}/.net-app
