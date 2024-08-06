@@ -24,6 +24,15 @@ jobs:
       - name: dotnet publish
         run: dotnet publish -c Release -o ${{ github.workspace }}/publish
 
+      - name: Verify publish directory
+        run: |
+          if [ -d "${{ github.workspace }}/publish" ]; then
+            echo "Publish directory exists."
+          else
+            echo "Publish directory does not exist."
+            exit 1
+          fi
+
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
@@ -45,6 +54,18 @@ jobs:
         with:
           name: .net-app
 
+      - name: Verify downloaded artifact
+        run: |
+          if [ -d "${{ github.workspace }}/.net-app" ]; then
+            echo "Artifact directory exists."
+          else
+            echo "Artifact directory does not exist."
+            exit 1
+          fi
+
+      - name: List files in artifact directory
+        run: ls ${{ github.workspace }}/.net-app
+
       - name: Login to Azure
         uses: azure/login@v2
         with:
@@ -58,4 +79,4 @@ jobs:
         with:
           app-name: 'pizzawebapp1'
           slot-name: 'Production'
-          package: ${{ github.workspace }}/publish
+          package: ${{ github.workspace }}/.net-app
