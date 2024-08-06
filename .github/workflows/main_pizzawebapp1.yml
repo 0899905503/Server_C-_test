@@ -26,12 +26,7 @@ jobs:
 
       - name: Verify publish directory
         run: |
-          if [ -d "${{ github.workspace }}/publish" ]; then
-            echo "Publish directory exists."
-          else
-            echo "Publish directory does not exist."
-            exit 1
-          fi
+          dir ${{ github.workspace }}/publish
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
@@ -56,15 +51,10 @@ jobs:
 
       - name: Verify downloaded artifact
         run: |
-          if [ -d "${{ github.workspace }}/.net-app" ]; then
-            echo "Artifact directory exists."
-          else
-            echo "Artifact directory does not exist."
-            exit 1
-          fi
+          dir ${{ github.workspace }}/.net-app
 
       - name: List files in artifact directory
-        run: ls ${{ github.workspace }}/.net-app
+        run: dir ${{ github.workspace }}/.net-app
 
       - name: Login to Azure
         uses: azure/login@v2
