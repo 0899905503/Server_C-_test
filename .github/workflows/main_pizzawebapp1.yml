@@ -22,7 +22,7 @@ jobs:
         run: dotnet build --configuration Release
 
       - name: dotnet publish
-        run: dotnet publish -c Release -o ${{ github.workspace }}/publish
+        run: dotnet publish -c Release -o ${{ github.workspace }}/build-output
 
       - name: Verify publish directory
         run: |
@@ -60,7 +60,7 @@ jobs:
       - name: List files in artifact directory
         run: |
           echo "Listing files in artifact directory:"
-          dir ${{ github.workspace }}/.net-app
+          dir ${{ github.workspace }}/build-output
         shell: powershell
 
       - name: Login to Azure
@@ -76,4 +76,4 @@ jobs:
         with:
           app-name: 'pizzawebapp1'
           slot-name: 'Production'
-          package: ${{ github.workspace }}/.net-app
+          package: ${{ github.workspace }}/build-output
