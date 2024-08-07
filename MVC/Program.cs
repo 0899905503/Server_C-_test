@@ -19,12 +19,7 @@ if (!app.Environment.IsDevelopment())
     app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
 }
-<ItemGroup>
-  <None Update="web.config">
-    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    <CopyToPublishDirectory>Always</CopyToPublishDirectory>
-  </None>
-</ItemGroup>
+ 
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
