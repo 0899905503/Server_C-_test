@@ -22,11 +22,11 @@ jobs:
         run: dotnet build --configuration Release
 
       - name: dotnet publish
-        run: dotnet publish -c Release -o D:\C#_IMT\publish
+        run: dotnet publish -c Release -o D:\C#_IMT
 
       - name: Verify publish directory
         run: |
-          if (Test-Path "D:\C#_IMT\publish") {
+          if (Test-Path "D:\C#_IMT") {
             Write-Output "Publish directory exists."
           } else {
             Write-Output "Publish directory does not exist."
@@ -36,14 +36,14 @@ jobs:
 
       - name: List files in publish directory
         run: |
-          Get-ChildItem -Path "D:\C#_IMT\publish"
+          Get-ChildItem -Path "D:\C#_IMT"
         shell: pwsh
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
           name: .net-app
-          path: D:\C#_IMT\publish
+          path: D:\C#_IMT
 
   deploy:
     runs-on: windows-latest
