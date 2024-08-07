@@ -1,3 +1,6 @@
+# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
+# More GitHub Actions for Azure: https://github.com/Azure/actions
+
 name: Build and deploy ASP.Net Core app to Azure Web App - pizzawebapp1
 
 on:
@@ -22,65 +25,35 @@ jobs:
         run: dotnet build --configuration Release
 
       - name: dotnet publish
-        run: dotnet publish -c Release -o ${{github.workspace}}
-
-      - name: Verify publish directory
-        run: |
-          if (Test-Path "${{github.workspace}}") {
-            Write-Output "Publish directory exists."
-          } else {
-            Write-Output "Publish directory does not exist."
-            exit 1
-          }
-        shell: pwsh
-
-      - name: List files in publish directory
-        run: |
-          Get-ChildItem -Path "${{github.workspace}}"
-        shell: pwsh
+        run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
           name: .net-app
-          path: ${{ github.workspace }}
+          path: ${{env.DOTNET_ROOT}}/myapp
 
   deploy:
     runs-on: windows-latest
     needs: build
     environment:
       name: 'Production'
-      url: ${{steps.deploy-to-webapp.outputs.webapp-url}}
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
     permissions:
-      id-token: write # This is required for requesting the JWT
+      id-token: write #This is required for requesting the JWT
 
     steps:
       - name: Download artifact from build job
         uses: actions/download-artifact@v4
         with:
           name: .net-app
-
-      - name: Verify downloaded artifact
-        run: |
-          if (Test-Path "${{ github.workspace }}") {
-            Write-Output "Artifact directory exists."
-          } else {
-            Write-Output "Artifact directory does not exist."
-            exit 1
-          }
-        shell: pwsh
-
-      - name: List files in artifact directory
-        run: |
-          Get-ChildItem -Path "${{ github.workspace }}"
-        shell: pwsh
-
+      
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_AA6D2A0C2FF94BCDB261AA473E83D390 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_6DDA6107707B4EA9A45BD169643CB940 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_1DE8B2D28EC749B29240C0F2AFD38E61 }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_3CAF3304B5BD4B8F9165791EC8087784 }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_AB09CD23EF5D4CFAA8B87149BE3C3BD6 }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_F66A9E403CF24AF0A54EF1456F1DF573 }}
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
@@ -88,4 +61,5 @@ jobs:
         with:
           app-name: 'pizzawebapp1'
           slot-name: 'Production'
-          package: '${{ github.workspace }}'
+          package: .
+          
