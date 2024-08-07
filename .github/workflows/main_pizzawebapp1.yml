@@ -22,7 +22,7 @@ jobs:
         run: dotnet build --configuration Release
 
       - name: dotnet publish
-        run: dotnet publish -c Release -o ${{ github.workspace }}/publish
+        run: dotnet publish -c Release -o ${{ github.workspace }}\publish
 
       - name: Verify publish directory
         run: |
@@ -43,7 +43,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: .net-app
-          path: ${{ github.workspace }}/publish
+          path: ${{ github.workspace }}\publish
 
   deploy:
     runs-on: windows-latest
@@ -78,9 +78,9 @@ jobs:
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_AA6D2A0C2FF94BCDB261AA473E83D390 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_6DDA6107707B4EA9A45BD169643CB940 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_1DE8B2D28EC749B29240C0F2AFD38E61 }}
+          client-id: ${{secrets.AZUREAPPSERVICE_CLIENTID_312722e0-d838-46c0-85a9-176482e61ef8}}
+          tenant-id: ${{secrets.AZUREAPPSERVICE_TENANTID_a282b661-3e3d-4892-bf28-bfbebbe20fe3}}
+          subscription-id: ${{secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_360fecba-c023-44d2-8707-3be1760d7e21}}
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
