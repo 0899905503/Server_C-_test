@@ -63,7 +63,7 @@ jobs:
 
       - name: Verify downloaded artifact
         run: |
-          if (Test-Path "D:\C#_IMT\.net-app") {
+          if (Test-Path "D:\C#_IMT") {
             Write-Output "Artifact directory exists."
           } else {
             Write-Output "Artifact directory does not exist."
@@ -73,7 +73,7 @@ jobs:
 
       - name: List files in artifact directory
         run: |
-          Get-ChildItem -Path "D:\C#_IMT\.net-app"
+          Get-ChildItem -Path "D:\C#_IMT"
         shell: pwsh
 
       - name: Login to Azure
@@ -89,4 +89,4 @@ jobs:
         with:
           app-name: 'pizzawebapp1'
           slot-name: 'Production'
-          package: 'D:\C#_IMT\publish'
+          package: 'D:\C#_IMT'
