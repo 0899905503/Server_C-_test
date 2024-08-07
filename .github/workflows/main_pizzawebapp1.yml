@@ -26,16 +26,18 @@ jobs:
 
       - name: Verify publish directory
         run: |
-          if [ -d "${{ github.workspace }}/publish" ]; then
-            echo "Publish directory exists."
-          else
-            echo "Publish directory does not exist."
+          if (Test-Path "${{ github.workspace }}\publish") {
+            Write-Output "Publish directory exists."
+          } else {
+            Write-Output "Publish directory does not exist."
             exit 1
-          fi
+          }
+        shell: pwsh
 
       - name: List files in publish directory
         run: |
-          dir ${{ github.workspace }}/publish
+          Get-ChildItem -Path "${{ github.workspace }}\publish"
+        shell: pwsh
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
@@ -50,7 +52,7 @@ jobs:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
     permissions:
-      id-token: write #This is required for requesting the JWT
+      id-token: write # This is required for requesting the JWT
 
     steps:
       - name: Download artifact from build job
@@ -60,16 +62,18 @@ jobs:
 
       - name: Verify downloaded artifact
         run: |
-          if [ -d "${{ github.workspace }}/.net-app" ]; then
-            echo "Artifact directory exists."
-          else
-            echo "Artifact directory does not exist."
+          if (Test-Path "${{ github.workspace }}\.net-app") {
+            Write-Output "Artifact directory exists."
+          } else {
+            Write-Output "Artifact directory does not exist."
             exit 1
-          fi
+          }
+        shell: pwsh
 
       - name: List files in artifact directory
         run: |
-          dir ${{ github.workspace }}/.net-app
+          Get-ChildItem -Path "${{ github.workspace }}\.net-app"
+        shell: pwsh
 
       - name: Login to Azure
         uses: azure/login@v2
@@ -84,4 +88,4 @@ jobs:
         with:
           app-name: 'pizzawebapp1'
           slot-name: 'Production'
-          package: 'D:/a/Server_C-_test/Server_C-_test/publish'
+          package: '${{ github.workspace }}\publish'
