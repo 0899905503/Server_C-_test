@@ -22,11 +22,11 @@ jobs:
         run: dotnet build --configuration Release
 
       - name: dotnet publish
-        run: dotnet publish -c Release -o ${{ github.workspace }}\publish
+        run: dotnet publish -c Release -o D:\C#_IMT\publish
 
       - name: Verify publish directory
         run: |
-          if (Test-Path "${{ github.workspace }}\publish") {
+          if (Test-Path "D:\C#_IMT\publish") {
             Write-Output "Publish directory exists."
           } else {
             Write-Output "Publish directory does not exist."
@@ -36,14 +36,14 @@ jobs:
 
       - name: List files in publish directory
         run: |
-          Get-ChildItem -Path "${{ github.workspace }}\publish"
+          Get-ChildItem -Path "D:\C#_IMT\publish"
         shell: pwsh
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
           name: .net-app
-          path: ${{ github.workspace }}\publish
+          path: D:\C#_IMT\publish
 
   deploy:
     runs-on: windows-latest
@@ -59,10 +59,11 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: .net-app
+          path: D:\C#_IMT
 
       - name: Verify downloaded artifact
         run: |
-          if (Test-Path "${{ github.workspace }}\.net-app") {
+          if (Test-Path "D:\C#_IMT\.net-app") {
             Write-Output "Artifact directory exists."
           } else {
             Write-Output "Artifact directory does not exist."
@@ -72,7 +73,7 @@ jobs:
 
       - name: List files in artifact directory
         run: |
-          Get-ChildItem -Path "${{ github.workspace }}\.net-app"
+          Get-ChildItem -Path "D:\C#_IMT\.net-app"
         shell: pwsh
 
       - name: Login to Azure
@@ -88,4 +89,4 @@ jobs:
         with:
           app-name: 'pizzawebapp1'
           slot-name: 'Production'
-          package: '${{ github.workspace }}\publish'
+          package: 'D:\C#_IMT\publish'
