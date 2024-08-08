@@ -25,15 +25,22 @@ jobs:
         run: dotnet publish -c Release -o ${{ github.workspace }}\publish
  
 
-      - name: Verify publish directory
+      - name: Verify downloaded artifact
         run: |
-          if (Test-Path "${{ github.workspace }}\publish") {
-            Write-Output "Publish directory exists."
-          } else {
-            Write-Output "Publish directory does not exist."
-            exit 1
-          }
+          Write-Output "Current directory:"
+          pwd
+          Write-Output "Listing files in workspace:"
+           Get-ChildItem -Path "${{ github.workspace }}"
+             Write-Output "Listing files in publish directory:"
+               if (Test-Path "${{ github.workspace }}/publish") {
+                 Get-ChildItem -Path "${{ github.workspace }}/publish"
+                 Write-Output "Artifact directory exists."
+               } else {
+                 Write-Output "Artifact directory does not exist."
+                exit 1
+               }
         shell: pwsh
+
 
       - name: List files in publish directory
         run: |
