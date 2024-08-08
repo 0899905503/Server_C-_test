@@ -32,8 +32,8 @@ jobs:
           Write-Output "Listing files in workspace:"
            Get-ChildItem -Path "${{ github.workspace }}"
              Write-Output "Listing files in publish directory:"
-               if (Test-Path "${{ github.workspace }}/publish") {
-                 Get-ChildItem -Path "${{ github.workspace }}/publish"
+               if (Test-Path "${{ github.workspace }}\publish") {
+                 Get-ChildItem -Path "${{ github.workspace }}\publish"
                  Write-Output "Artifact directory exists."
                } else {
                  Write-Output "Artifact directory does not exist."
