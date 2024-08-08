@@ -1,6 +1,3 @@
-# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
-# More GitHub Actions for Azure: https://github.com/Azure/actions
-
 name: Build and deploy ASP.Net Core app to Azure Web App - pizzawebapp1
 
 on:
@@ -33,10 +30,13 @@ jobs:
             Write-Output "Publish directory exists."
           } else {
             Write-Output "Publish directory does not exist."
+            exit 1
+          }
         shell: pwsh
 
       - name: List files in publish directory
-        run: Get-ChildItem -Path "${{github.workspace}}"
+        run: |
+          Get-ChildItem -Path "${{github.workspace}}"
         shell: pwsh
 
       - name: Upload artifact for deployment job
@@ -66,18 +66,22 @@ jobs:
             Write-Output "Artifact directory exists."
           } else {
             Write-Output "Artifact directory does not exist."
+            exit 1
+          }
         shell: pwsh
 
       - name: List files in artifact directory
-        run: Get-ChildItem -Path "${{ github.workspace }}"
+        run: |
+          Get-ChildItem -Path "${{ github.workspace }}"
         shell: pwsh
 
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{312722e0-d838-46c0-85a9-176482e61ef8}}
-          tenant-id: ${{a282b661-3e3d-4892-bf28-bfbebbe20fe3}}
-          subscription-id: ${{360fecba-c023-44d2-8707-3be1760d7e21}}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_AA6D2A0C2FF94BCDB261AA473E83D390 }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_6DDA6107707B4EA9A45BD169643CB940 }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_1DE8B2D28EC749B29240C0F2AFD38E61 }}
+
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
