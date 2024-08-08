@@ -22,44 +22,57 @@ jobs:
           dotnet-version: '6.0.x'
 
       - name: Build with dotnet
-        run: dotnet build --configuration Release
+           run: dotnet build --configuration Release
 
       - name: dotnet publish
-        run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}
+        run: dotnet publish -c Release -o ${{github.workspace}}
+
+      - name: Verify publish directory
+        run: |
+          if (Test-Path "${{github.workspace}}") {
+            Write-Output "Publish directory exists."
+          } else {
+            Write-Output "Publish directory does not exist."
+	@@ -36,21 +36,21 @@ jobs:
+
+      - name: List files in publish directory
+        run: |
+          Get-ChildItem -Path "${{github.workspace}}"
+        shell: pwsh
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
           name: .net-app
-          path: ${{env.DOTNET_ROOT}}
+          path: ${{ github.workspace }}
 
   deploy:
     runs-on: windows-latest
     needs: build
     environment:
       name: 'Production'
-      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+      url: ${{steps.deploy-to-webapp.outputs.webapp-url}}
     permissions:
-      id-token: write #This is required for requesting the JWT
+      id-token: write # This is required for requesting the JWT
 
-    steps:
-      - name: Download artifact from build job
-        uses: actions/download-artifact@v4
-        with:
-          name: .net-app
-      
+	@@ -62,7 +62,7 @@ jobs:
+
+      - name: Verify downloaded artifact
+        run: |
+          if (Test-Path "${{ github.workspace }}") {
+            Write-Output "Artifact directory exists."
+          } else {
+            Write-Output "Artifact directory does not exist."
+	@@ -72,7 +72,7 @@ jobs:
+
+      - name: List files in artifact directory
+        run: |
+          Get-ChildItem -Path "${{ github.workspace }}"
+        shell: pwsh
+
       - name: Login to Azure
-        uses: azure/login@v2
-        with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_4A5833E3AD4341779C320D712879AB8F }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_C5B7C2AA1D714C388523773E578F3E39 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_3CB5CC5445D9448C9067BB8D1AEED719 }}
-
-      - name: Deploy to Azure Web App
-        id: deploy-to-webapp
-        uses: azure/webapps-deploy@v3
+	@@ -88,4 +88,4 @@ jobs:
         with:
           app-name: 'pizzawebapp1'
           slot-name: 'Production'
-          package: ${{ github.workspace }}
-          
+          package: '${{ github.workspace }}'
