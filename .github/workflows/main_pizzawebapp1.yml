@@ -21,12 +21,12 @@ jobs:
       - name: Build with dotnet
         run: dotnet build --configuration Release
 
-      - name: dotnet publish
-        run: dotnet publish -c Release -o ${{github.workspace}}
+      - name: Publish with dotnet
+        run: dotnet publish -c Release -o ${{ github.workspace }}/publish
 
       - name: Verify publish directory
         run: |
-          if (Test-Path "${{github.workspace}}") {
+          if (Test-Path "${{ github.workspace }}/publish") {
             Write-Output "Publish directory exists."
           } else {
             Write-Output "Publish directory does not exist."
@@ -36,21 +36,21 @@ jobs:
 
       - name: List files in publish directory
         run: |
-          Get-ChildItem -Path "${{github.workspace}}"
+          Get-ChildItem -Path "${{ github.workspace }}/publish"
         shell: pwsh
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
           name: .net-app
-          path: ${{ github.workspace }}
+          path: ${{ github.workspace }}/publish
 
   deploy:
     runs-on: windows-latest
     needs: build
     environment:
       name: 'Production'
-      url: ${{steps.deploy-to-webapp.outputs.webapp-url}}
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
     permissions:
       id-token: write # This is required for requesting the JWT
 
@@ -62,7 +62,7 @@ jobs:
 
       - name: Verify downloaded artifact
         run: |
-          if (Test-Path "${{ github.workspace }}") {
+          if (Test-Path "${{ github.workspace }}/publish") {
             Write-Output "Artifact directory exists."
           } else {
             Write-Output "Artifact directory does not exist."
@@ -72,7 +72,7 @@ jobs:
 
       - name: List files in artifact directory
         run: |
-          Get-ChildItem -Path "${{ github.workspace }}"
+          Get-ChildItem -Path "${{ github.workspace }}/publish"
         shell: pwsh
 
       - name: Login to Azure
@@ -87,5 +87,4 @@ jobs:
         uses: azure/webapps-deploy@v3
         with:
           app-name: 'pizzawebapp1'
-          slot-name: 'Production'
-          package: '${{ github.workspace }}'
+          package: '${{ github.workspace }}/publish'
