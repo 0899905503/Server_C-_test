@@ -26,7 +26,13 @@ jobs:
  
 
       - name: Verify publish directory
-        
+        run: |
+          if (Test-Path "${{ github.workspace }}/publish") {
+            Write-Output "Publish directory exists."
+          } else {
+            Write-Output "Publish directory does not exist."
+            exit 1
+          }
         shell: pwsh
 
       - name: List files in publish directory
